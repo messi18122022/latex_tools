@@ -326,7 +326,10 @@ class CSVPlotterApp:
             self.plot_settings['y_ticks'] = list(map(float, y_ticks_entry.get().split(','))) if y_ticks_entry.get() else None
 
             # Plot aktualisieren
-            update_plot()
+            try:
+                update_plot()
+            except Exception as e:
+                tk.messagebox.showerror("LaTeX Error", "Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
         # Einstellungsfelder für Plot-Einstellungen erstellen
         tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
@@ -463,33 +466,42 @@ class CSVPlotterApp:
                     x_data = df_x[x_column].to_numpy()
                     y_data = df_y[y_column].to_numpy()
 
-                    # Plot the original data with settings
-                    ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark)
-                    visible_lines += 1
+                    try:
+                        # Plot the original data with settings
+                        ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark)
+                        visible_lines += 1
 
-                    # Linear regression if selected
-                    if self.plot_settings.get('linreg', False):
-                        slope, intercept, r_value, _, _ = stats.linregress(x_data, y_data)
-                        reg_line = slope * x_data + intercept
-                        ax.plot(x_data, reg_line, color="black", linewidth=0.5, label=f"LinReg ({legend_name})")
+                        # Linear regression if selected
+                        if self.plot_settings.get('linreg', False):
+                            slope, intercept, r_value, _, _ = stats.linregress(x_data, y_data)
+                            reg_line = slope * x_data + intercept
+                            ax.plot(x_data, reg_line, color="black", linewidth=0.5, label=f"LinReg ({legend_name})")
 
-                        # Display correlation coefficient
-                        r_text = f"r = {r_value:.4f}"
-                        corr_pos_map = {
-                            "oben rechts": (0.8, 0.95),
-                            "oben links": (0.1, 0.95),
-                            "unten rechts": (0.8, 0.1),
-                            "unten links": (0.1, 0.1)
-                        }
-                        pos_x, pos_y = corr_pos_map.get(self.plot_settings.get('corr_pos', 'oben rechts'))
+                            # Display correlation coefficient
+                            r_text = f"r = {r_value:.4f}"
+                            corr_pos_map = {
+                                "oben rechts": (0.8, 0.95),
+                                "oben links": (0.1, 0.95),
+                                "unten rechts": (0.8, 0.1),
+                                "unten links": (0.1, 0.1)
+                            }
+                            pos_x, pos_y = corr_pos_map.get(self.plot_settings.get('corr_pos', 'oben rechts'))
 
-                        # Add the correlation coefficient box
-                        box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
-                        ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
+                            # Add the correlation coefficient box
+                            box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
+                            ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
+                    
+                    except Exception as e:
+                        tk.messagebox.showerror("LaTeX Error", f"Fehlerhafte LaTeX-Syntax in der Legende: '{legend_name}'. Bitte überprüfen.")
+                        return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
-            # Set axis labels and limits
-            ax.set_xlabel(self.plot_settings['x_label'])
-            ax.set_ylabel(self.plot_settings['y_label'])
+            # Apply axis labels and limits with LaTeX error handling
+            try:
+                ax.set_xlabel(self.plot_settings['x_label'])
+                ax.set_ylabel(self.plot_settings['y_label'])
+            except Exception as e:
+                tk.messagebox.showerror("LaTeX Error", "Fehlerhafte LaTeX-Syntax in den Achsenbeschriftungen. Bitte überprüfen.")
+                return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
             if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
                 ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
@@ -508,16 +520,20 @@ class CSVPlotterApp:
             if self.plot_settings['grid']:
                 ax.grid(True)
 
-            # Legend anzeigen, nur wenn mehr als eine sichtbare Linie existiert
+            # Show legend if more than one visible line exists
             if visible_lines > 1:
-                legend_position_map = {
-                    "oben rechts": "upper right",
-                    "oben links": "upper left",
-                    "unten rechts": "lower right",
-                    "unten links": "lower left"
-                }
-                legend_position = legend_position_map.get(self.plot_settings['legend_position'], 'upper right')
-                ax.legend(loc=legend_position)
+                try:
+                    legend_position_map = {
+                        "oben rechts": "upper right",
+                        "oben links": "upper left",
+                        "unten rechts": "lower right",
+                        "unten links": "lower left"
+                    }
+                    legend_position = legend_position_map.get(self.plot_settings['legend_position'], 'upper right')
+                    ax.legend(loc=legend_position)
+                except Exception as e:
+                    tk.messagebox.showerror("LaTeX Error", "Fehlerhafte LaTeX-Syntax in der Legendenposition. Bitte überprüfen.")
+                    return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
             canvas.draw()
 
@@ -911,4 +927,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CSVPlotterApp(root)
     root.mainloop()
-
