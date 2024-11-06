@@ -8,6 +8,7 @@ from matplotlib.backends.backend_tkagg import NavigationToolbar2Tk
 import numpy as np
 from scipy import stats
 import json
+import os
 
 # Globale Einstellungen für LaTeX und Computer Modern
 plt.rcParams['text.usetex'] = True  # Aktiviert LaTeX für Textrenderung
@@ -678,6 +679,10 @@ class CSVPlotterApp:
 
         tk.messagebox.showinfo("Erfolg", "Die Datei wurde erfolgreich exportiert.")
 
+        # Call the JSON export after saving the TeX
+        self.export_json_for_plot(file_path)
+        tk.messagebox.showinfo("Erfolg", "Die Datei und JSON wurden erfolgreich als TeX und JSON exportiert.")
+
     def export_png(self):
         # Öffne einen Speicherdialog, um den Dateinamen und Speicherort zu wählen
         file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")], initialfile="Plot.png")
@@ -773,6 +778,10 @@ class CSVPlotterApp:
         plt.close(fig)  # Schließe den Plot, um Speicher freizugeben
 
         tk.messagebox.showinfo("Erfolg", "Der Plot wurde erfolgreich als PNG gespeichert.")
+
+        # Call the JSON export after saving the PNG
+        self.export_json_for_plot(file_path)
+        tk.messagebox.showinfo("Erfolg", "Der Plot und JSON wurden erfolgreich als PNG und JSON gespeichert.")
 
     def export_pdf(self):
         # Öffne einen Speicherdialog für den PDF-Dateinamen
@@ -872,6 +881,10 @@ class CSVPlotterApp:
 
         tk.messagebox.showinfo("Erfolg", "Der Plot wurde erfolgreich als PDF mit transparentem Hintergrund gespeichert.")
 
+        # Call the JSON export after saving the PDF
+        self.export_json_for_plot(file_path)
+        tk.messagebox.showinfo("Erfolg", "Der Plot und JSON wurden erfolgreich als PDF und JSON gespeichert.")
+
     def plot_preview(self):
         # Erstelle ein neues Fenster für den interaktiven Plot
         preview_window = tk.Toplevel(self.root)
@@ -922,6 +935,44 @@ class CSVPlotterApp:
         toolbar = NavigationToolbar2Tk(canvas, preview_window)
         toolbar.update()
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
+    def export_json_for_plot(self, file_path):
+        """
+        Save the visible data for the current plot as a JSON file.
+        """
+        # Only visible rows are exported
+        visible_data = []
+        for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
+            if visibility_dropdown.get() == "sichtbar":  # Only include visible data
+                selected_file_x = file_dropdown_x.get()
+                selected_file_y = file_dropdown_y.get()
+                x_column = x_dropdown.get()
+                y_column = y_dropdown.get()
+                legend_name = name_entry.get()
+
+                if selected_file_x and selected_file_y and x_column and y_column:
+                    df_x = self.dataframes[selected_file_x]
+                    df_y = self.dataframes[selected_file_y]
+                    x_data = df_x[x_column].to_list()
+                    y_data = df_y[y_column].to_list()
+
+                    # Collecting data with necessary attributes
+                    visible_data.append({
+                        "file_x": selected_file_x,
+                        "file_y": selected_file_y,
+                        "x_column": x_column,
+                        "y_column": y_column,
+                        "legend_name": legend_name,
+                        "x_data": x_data,
+                        "y_data": y_data
+                    })
+
+        # Define the JSON filename, based on the provided file_path
+        json_file_path = os.path.splitext(file_path)[0] + ".json"
+
+        # Write to JSON file
+        with open(json_file_path, 'w') as json_file:
+            json.dump({"plot_data": visible_data}, json_file, indent=4)
 
 if __name__ == "__main__":
     root = tk.Tk()
