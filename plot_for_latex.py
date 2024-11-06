@@ -938,10 +938,10 @@ class CSVPlotterApp:
 
     def export_json_for_plot(self, file_path):
         """
-        Save the visible data for the current plot as a JSON file.
+        Save the visible data for the current plot as a JSON file, ensuring structure matches load expectations.
         """
         # Only visible rows are exported
-        visible_data = []
+        visible_rows = []
         for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
             if visibility_dropdown.get() == "sichtbar":  # Only include visible data
                 selected_file_x = file_dropdown_x.get()
@@ -949,6 +949,10 @@ class CSVPlotterApp:
                 x_column = x_dropdown.get()
                 y_column = y_dropdown.get()
                 legend_name = name_entry.get()
+                color = color_dropdown.get()
+                line_width = line_width_entry.get()
+                line_style = line_style_dropdown.get()
+                marker = marker_dropdown.get()
 
                 if selected_file_x and selected_file_y and x_column and y_column:
                     df_x = self.dataframes[selected_file_x]
@@ -956,23 +960,35 @@ class CSVPlotterApp:
                     x_data = df_x[x_column].to_list()
                     y_data = df_y[y_column].to_list()
 
-                    # Collecting data with necessary attributes
-                    visible_data.append({
+                    # Collect data for each visible row
+                    visible_rows.append({
                         "file_x": selected_file_x,
                         "file_y": selected_file_y,
                         "x_column": x_column,
                         "y_column": y_column,
+                        "visibility": "sichtbar",
                         "legend_name": legend_name,
+                        "color": color,
+                        "line_width": line_width,
+                        "line_style": line_style,
+                        "marker": marker,
                         "x_data": x_data,
                         "y_data": y_data
                     })
 
+        # JSON structure similar to full project save, but only with visible rows
+        json_data = {
+            "plot_settings": self.plot_settings,
+            "rows": visible_rows
+        }
+
         # Define the JSON filename, based on the provided file_path
         json_file_path = os.path.splitext(file_path)[0] + ".json"
 
-        # Write to JSON file
+        # Write to JSON file with indentation for readability
         with open(json_file_path, 'w') as json_file:
-            json.dump({"plot_data": visible_data}, json_file, indent=4)
+            json.dump(json_data, json_file, indent=4)
+
 
 if __name__ == "__main__":
     root = tk.Tk()
