@@ -938,12 +938,14 @@ class CSVPlotterApp:
 
     def export_json_for_plot(self, file_path):
         """
-        Save the visible data for the current plot as a JSON file, ensuring structure matches load expectations.
+        Save the visible data for the current plot as a JSON file, including x and y data for each visible row.
         """
-        # Only visible rows are exported
+        # Prepare data structure to mirror the project structure with x and y data included
+        visible_dataframes = {}
         visible_rows = []
+
         for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
-            if visibility_dropdown.get() == "sichtbar":  # Only include visible data
+            if visibility_dropdown.get() == "sichtbar":
                 selected_file_x = file_dropdown_x.get()
                 selected_file_y = file_dropdown_y.get()
                 x_column = x_dropdown.get()
@@ -954,13 +956,21 @@ class CSVPlotterApp:
                 line_style = line_style_dropdown.get()
                 marker = marker_dropdown.get()
 
+                # Check that selected files and columns exist
                 if selected_file_x and selected_file_y and x_column and y_column:
+                    # Retrieve the specific columns as x and y data lists
                     df_x = self.dataframes[selected_file_x]
                     df_y = self.dataframes[selected_file_y]
-                    x_data = df_x[x_column].to_list()
-                    y_data = df_y[y_column].to_list()
+                    x_data = df_x[x_column].tolist()
+                    y_data = df_y[y_column].tolist()
 
-                    # Collect data for each visible row
+                    # Include the DataFrames in the visible data structure
+                    if selected_file_x not in visible_dataframes:
+                        visible_dataframes[selected_file_x] = {x_column: x_data}
+                    if selected_file_y not in visible_dataframes:
+                        visible_dataframes[selected_file_y] = {y_column: y_data}
+
+                    # Add row data including x and y data lists
                     visible_rows.append({
                         "file_x": selected_file_x,
                         "file_y": selected_file_y,
@@ -976,19 +986,19 @@ class CSVPlotterApp:
                         "y_data": y_data
                     })
 
-        # JSON structure similar to full project save, but only with visible rows
+        # JSON structure to match the project save format, including visible x and y data
         json_data = {
+            "dataframes": visible_dataframes,
             "plot_settings": self.plot_settings,
             "rows": visible_rows
         }
 
-        # Define the JSON filename, based on the provided file_path
+        # Define JSON filename based on the export file path
         json_file_path = os.path.splitext(file_path)[0] + ".json"
 
-        # Write to JSON file with indentation for readability
+        # Write JSON file with detailed structure
         with open(json_file_path, 'w') as json_file:
             json.dump(json_data, json_file, indent=4)
-
 
 if __name__ == "__main__":
     root = tk.Tk()
