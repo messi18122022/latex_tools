@@ -938,9 +938,9 @@ class CSVPlotterApp:
 
     def export_json_for_plot(self, file_path):
         """
-        Save the visible data for the current plot as a JSON file, including x and y data for each visible row.
+        Save the visible data for the current plot as a JSON file, fully matching the project save format.
         """
-        # Prepare data structure to mirror the project structure with x and y data included
+        # Dictionary to hold visible data as per project save format
         visible_dataframes = {}
         visible_rows = []
 
@@ -958,19 +958,19 @@ class CSVPlotterApp:
 
                 # Check that selected files and columns exist
                 if selected_file_x and selected_file_y and x_column and y_column:
-                    # Retrieve the specific columns as x and y data lists
                     df_x = self.dataframes[selected_file_x]
                     df_y = self.dataframes[selected_file_y]
-                    x_data = df_x[x_column].tolist()
-                    y_data = df_y[y_column].tolist()
 
-                    # Include the DataFrames in the visible data structure
+                    # Include only the necessary columns in the dataframe dictionary
                     if selected_file_x not in visible_dataframes:
-                        visible_dataframes[selected_file_x] = {x_column: x_data}
+                        visible_dataframes[selected_file_x] = {}
                     if selected_file_y not in visible_dataframes:
-                        visible_dataframes[selected_file_y] = {y_column: y_data}
+                        visible_dataframes[selected_file_y] = {}
 
-                    # Add row data including x and y data lists
+                    visible_dataframes[selected_file_x][x_column] = df_x[x_column].to_dict()
+                    visible_dataframes[selected_file_y][y_column] = df_y[y_column].to_dict()
+
+                    # Collect row settings
                     visible_rows.append({
                         "file_x": selected_file_x,
                         "file_y": selected_file_y,
@@ -981,12 +981,10 @@ class CSVPlotterApp:
                         "color": color,
                         "line_width": line_width,
                         "line_style": line_style,
-                        "marker": marker,
-                        "x_data": x_data,
-                        "y_data": y_data
+                        "marker": marker
                     })
 
-        # JSON structure to match the project save format, including visible x and y data
+        # JSON structure, closely matching the project save format
         json_data = {
             "dataframes": visible_dataframes,
             "plot_settings": self.plot_settings,
