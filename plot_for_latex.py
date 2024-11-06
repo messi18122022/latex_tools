@@ -326,7 +326,10 @@ class CSVPlotterApp:
             self.plot_settings['y_ticks'] = list(map(float, y_ticks_entry.get().split(','))) if y_ticks_entry.get() else None
 
             # Plot aktualisieren
-            update_plot()
+            try:
+                update_plot()
+            except Exception as e:
+                tk.messagebox.showerror("LaTeX Error", "Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
         # Einstellungsfelder für Plot-Einstellungen erstellen
         tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
@@ -487,9 +490,12 @@ class CSVPlotterApp:
                         box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
                         ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
 
-            # Set axis labels and limits
-            ax.set_xlabel(self.plot_settings['x_label'])
-            ax.set_ylabel(self.plot_settings['y_label'])
+            # Apply axis labels and limits with LaTeX error handling
+            try:
+                ax.set_xlabel(self.plot_settings['x_label'])
+                ax.set_ylabel(self.plot_settings['y_label'])
+            except Exception as e:
+                tk.messagebox.showerror("LaTeX Error", "Fehlerhafte LaTeX-Syntax in den Achsenbeschriftungen. Bitte überprüfen.")
 
             if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
                 ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
@@ -911,4 +917,3 @@ if __name__ == "__main__":
     root = tk.Tk()
     app = CSVPlotterApp(root)
     root.mainloop()
-
