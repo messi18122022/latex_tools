@@ -1,6 +1,6 @@
 # plot for latex App - Benutzerhandbuch
 
-**CSV Plotter App** ist eine Anwendung, mit der Sie ganz einfach Diagramme aus CSV-Dateien erstellen, anpassen und exportieren können. Sie können Daten aus verschiedenen Quellen visualisieren und so Ihre Datenanalyse unterstützen, ohne programmieren zu müssen.
+**plot for latex App** ist eine Anwendung, mit der Sie ganz einfach Diagramme aus CSV-Dateien erstellen, anpassen und exportieren können. Sie können Daten aus verschiedenen Quellen visualisieren und so Ihre Datenanalyse unterstützen, ohne programmieren zu müssen.
 
 ## Übersicht
 
