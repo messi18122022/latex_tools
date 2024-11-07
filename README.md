@@ -1,4 +1,4 @@
-# EinrichtenNUTTE
+# Einrichten
 
 ## Verknüpfung im eigenen Verzeichnis erstellen: Windows
 
