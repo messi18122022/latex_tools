@@ -306,8 +306,34 @@ class CSVPlotterApp:
             self.plot_settings['grid'] = grid_var.get()
             self.plot_settings['linreg'] = linreg_var.get()  # Hinzufügen der LinReg-Option
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
-            self.plot_settings['x_ticks'] = list(map(float, x_ticks_entry.get().split(','))) if x_ticks_entry.get() else None
-            self.plot_settings['y_ticks'] = list(map(float, y_ticks_entry.get().split(','))) if y_ticks_entry.get() else None
+            
+            def parse_ticks(ticks_input):
+                try:
+                    # Prüfen auf 'start:step:end' Format
+                    if ":" in ticks_input:
+                        parts = ticks_input.split(":")
+                        if len(parts) == 3:
+                            start, step, end = map(float, parts)
+                            return list(np.arange(start, end + step, step))
+                        else:
+                            raise ValueError("Ungültiges Format. Verwenden Sie 'start:step:end' oder eine durch Kommas getrennte Liste.")
+                    # Falls kein ':', versuchen, die Werte als durch Kommas getrennte Liste zu lesen
+                    else:
+                        return [float(tick) for tick in ticks_input.split(",") if tick.strip()]
+                except ValueError as e:
+                    raise ValueError("Ungültiges Format für Ticks. Verwenden Sie 'start:step:end' oder eine durch Kommas getrennte Liste.")
+
+            # Aktualisieren der plot_settings für x_ticks und y_ticks
+            try:
+                self.plot_settings['x_ticks'] = parse_ticks(x_ticks_entry.get())
+            except ValueError as ve:
+                self.show_error(str(ve))
+
+            try:
+                self.plot_settings['y_ticks'] = parse_ticks(y_ticks_entry.get())
+            except ValueError as ve:
+                self.show_error(str(ve))
+
 
             # Plot aktualisieren
             try:
@@ -500,6 +526,12 @@ class CSVPlotterApp:
                 ax.set_xscale('log')
             if self.plot_settings['log_y_axis']:
                 ax.set_yscale('log')
+
+            if self.plot_settings['x_ticks'] is not None:
+                ax.set_xticks(self.plot_settings['x_ticks'])
+
+            if self.plot_settings['y_ticks'] is not None:
+                ax.set_yticks(self.plot_settings['y_ticks'])
 
             if self.plot_settings['grid']:
                 ax.grid(True)
@@ -728,6 +760,13 @@ class CSVPlotterApp:
         # Setze die Achsenbeschriftungen und -limits
         ax.set_xlabel(self.plot_settings['x_label'])
         ax.set_ylabel(self.plot_settings['y_label'])
+
+        # x_ticks und y_ticks setzen
+        if self.plot_settings['x_ticks'] is not None:
+            ax.set_xticks(self.plot_settings['x_ticks'])
+        
+        if self.plot_settings['y_ticks'] is not None:
+            ax.set_yticks(self.plot_settings['y_ticks'])
         
         if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
             ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
@@ -837,6 +876,13 @@ class CSVPlotterApp:
 
         if self.plot_settings['invert_x_axis']:
             ax.invert_xaxis()
+
+        # x_ticks und y_ticks setzen
+        if self.plot_settings['x_ticks'] is not None:
+            ax.set_xticks(self.plot_settings['x_ticks'])
+        
+        if self.plot_settings['y_ticks'] is not None:
+            ax.set_yticks(self.plot_settings['y_ticks'])
 
         if self.plot_settings['log_x_axis']:
             ax.set_xscale('log')
