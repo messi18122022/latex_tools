@@ -104,6 +104,13 @@ class CSVPlotterApp:
         entry.grid(row=row, column=column, pady=5)
         return entry
 
+    def create_dropdown(self, frame, options, row, column, default_value=None, width=10):
+        dropdown = ttk.Combobox(frame, state="readonly", values=options, width=width)
+        if default_value:
+            dropdown.set(default_value)
+        dropdown.grid(row=row, column=column, padx=5)
+        return dropdown
+
     def save_project(self):
         # Dialog zum Speichern des Projekts öffnen
         file_path = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON files", "*.json")], initialfile="projekt.json")
@@ -222,24 +229,17 @@ class CSVPlotterApp:
         row_frame = tk.Frame(self.table_frame)
         row_frame.pack(pady=5, fill="x")
 
-        file_dropdown_x = ttk.Combobox(row_frame, state="readonly", width=30)
-        file_dropdown_x.grid(row=0, column=0, padx=5)
-        file_dropdown_x.bind("<<ComboboxSelected>>", lambda event, dropdown=file_dropdown_x, axis='x': self.update_columns(dropdown, axis))
+        file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
 
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
-        file_dropdown_y = ttk.Combobox(row_frame, state="readonly", width=30)
-        file_dropdown_y.grid(row=0, column=2, padx=5)
-        file_dropdown_y.bind("<<ComboboxSelected>>", lambda event, dropdown=file_dropdown_y, axis='y': self.update_columns(dropdown, axis))
+        file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
 
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
-        visibility_dropdown = ttk.Combobox(row_frame, state="readonly", width=9)
-        visibility_dropdown["values"] = ["sichtbar", "nicht sichtbar"]
-        visibility_dropdown.set("sichtbar")
-        visibility_dropdown.grid(row=0, column=4, padx=5)
+        visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
 
         name_entry = tk.Entry(row_frame, width=20)
         name_entry.insert(0, "Legend Name")
@@ -257,16 +257,10 @@ class CSVPlotterApp:
         line_width_entry.grid(row=0, column=7, padx=5)
 
         # Line style dropdown
-        line_style_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
-        line_style_dropdown["values"] = ["durchgezogen", "gestrichelt", "keine"]
-        line_style_dropdown.set("durchgezogen")  # Default line style is solid
-        line_style_dropdown.grid(row=0, column=8, padx=5)
+        line_style_dropdown = self.create_dropdown(row_frame, ["durchgezogen", "gestrichelt", "keine"], 0, 8, default_value="durchgezogen", width=10)
 
         # Marker style dropdown
-        marker_dropdown = ttk.Combobox(row_frame, state="readonly", width=6)
-        marker_dropdown["values"] = ["keine", "Kreis", "+", "Dreieck", "Quadrat"]
-        marker_dropdown.set("keine")  # Default marker is none
-        marker_dropdown.grid(row=0, column=9, padx=5)
+        marker_dropdown = self.create_dropdown(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
 
         # Add to list of rows
         self.rows.append((file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame))
