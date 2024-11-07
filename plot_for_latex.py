@@ -25,30 +25,18 @@ class CSVPlotterApp:
         self.file_frame = tk.Frame(root, padx=10, pady=10)
         self.file_frame.grid(row=0, column=0, sticky="nw")
 
-        # Upload and remove buttons
-        self.upload_button = tk.Button(self.file_frame, text="Upload CSV", command=self.load_csv, width=20)
-        self.upload_button.grid(row=0, column=0, pady=5)
+        self.upload_button = self.create_button(self.file_frame, "Upload CSV", self.load_csv, 0, 0)
 
         self.files_listbox = tk.Listbox(self.file_frame, selectmode=tk.SINGLE, height=7, width=50)
         self.files_listbox.grid(row=1, column=0, pady=5)
 
-        self.remove_file_button = tk.Button(self.file_frame, text="Remove Selected File", command=self.remove_file, width=20)
-        self.remove_file_button.grid(row=2, column=0, pady=5)
+        self.remove_file_button = self.create_button(self.file_frame, "Remove Selected File", self.remove_file, 2, 0)
+        self.add_row_button = self.create_button(self.file_frame, "Add Row", self.add_row, 0, 1)
+        self.remove_row_button = self.create_button(self.file_frame, "Remove Last Row", self.remove_row, 1, 1)
+        self.plot_button = self.create_button(self.file_frame, "Plot", self.plot_data, 3, 1)
 
-        # Plot configuration buttons
-        self.add_row_button = tk.Button(self.file_frame, text="Add Row", command=self.add_row, width=20)
-        self.add_row_button.grid(row=0, column=1, pady=5)
-
-        self.remove_row_button = tk.Button(self.file_frame, text="Remove Last Row", command=self.remove_row, width=20)
-        self.remove_row_button.grid(row=1, column=1, pady=5)
-
-        self.plot_button = tk.Button(self.file_frame, text="Plot", command=self.plot_data, width=20)
-        self.plot_button.grid(row=3, column=1, pady=5)
-
-        # Frame for dynamic row addition
         self.table_frame = tk.Frame(root, padx=10, pady=10)
         self.table_frame.grid(row=11, column=0, sticky="nw")  # Nach Caption und Label Felder
-
 
         # Placeholder for DataFrames and file names
         self.dataframes = {}
@@ -77,14 +65,12 @@ class CSVPlotterApp:
         # Eingabefelder für Caption und Label
         self.caption_label = tk.Label(self.file_frame, text="Caption:")
         self.caption_label.grid(row=3, column=0, pady=5, sticky="w")
-        self.caption_entry = tk.Entry(self.file_frame, width=50)
-        self.caption_entry.grid(row=4, column=0, pady=5, columnspan=2, sticky="w")
+        self.caption_entry = self.create_entry(self.file_frame, 50, 4, 0, "Caption")
 
 
         self.label_label = tk.Label(self.file_frame, text="Label:")
         self.label_label.grid(row=5, column=0, pady=5, sticky="w")
-        self.label_entry = tk.Entry(self.file_frame, width=40)
-        self.label_entry.grid(row=6, column=0, pady=5, columnspan=2, sticky="w")
+        self.label_entry = self.create_entry(self.file_frame, 40, 6, 0, "Label")
 
         # Button für Tex-Export
         self.export_button = tk.Button(self.file_frame, text=".tex exportieren", command=self.export_tex, width=15)
@@ -106,6 +92,24 @@ class CSVPlotterApp:
 
         self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
         self.load_project_button.grid(row=1, column=3, pady=5)
+
+    def create_button(self, frame, text, command, row, column, width=20):
+        button = tk.Button(frame, text=text, command=command, width=width)
+        button.grid(row=row, column=column, pady=5)
+        return button
+
+    def create_entry(self, frame, width, row, column, placeholder=""):
+        entry = tk.Entry(frame, width=width)
+        entry.insert(0, placeholder)
+        entry.grid(row=row, column=column, pady=5)
+        return entry
+
+    def create_dropdown(self, frame, options, row, column, default_value=None, width=10):
+        dropdown = ttk.Combobox(frame, state="readonly", values=options, width=width)
+        if default_value:
+            dropdown.set(default_value)
+        dropdown.grid(row=row, column=column, padx=5)
+        return dropdown
 
     def save_project(self):
         # Dialog zum Speichern des Projekts öffnen
@@ -225,24 +229,17 @@ class CSVPlotterApp:
         row_frame = tk.Frame(self.table_frame)
         row_frame.pack(pady=5, fill="x")
 
-        file_dropdown_x = ttk.Combobox(row_frame, state="readonly", width=30)
-        file_dropdown_x.grid(row=0, column=0, padx=5)
-        file_dropdown_x.bind("<<ComboboxSelected>>", lambda event, dropdown=file_dropdown_x, axis='x': self.update_columns(dropdown, axis))
+        file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
 
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
-        file_dropdown_y = ttk.Combobox(row_frame, state="readonly", width=30)
-        file_dropdown_y.grid(row=0, column=2, padx=5)
-        file_dropdown_y.bind("<<ComboboxSelected>>", lambda event, dropdown=file_dropdown_y, axis='y': self.update_columns(dropdown, axis))
+        file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
 
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
-        visibility_dropdown = ttk.Combobox(row_frame, state="readonly", width=9)
-        visibility_dropdown["values"] = ["sichtbar", "nicht sichtbar"]
-        visibility_dropdown.set("sichtbar")
-        visibility_dropdown.grid(row=0, column=4, padx=5)
+        visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
 
         name_entry = tk.Entry(row_frame, width=20)
         name_entry.insert(0, "Legend Name")
@@ -260,16 +257,10 @@ class CSVPlotterApp:
         line_width_entry.grid(row=0, column=7, padx=5)
 
         # Line style dropdown
-        line_style_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
-        line_style_dropdown["values"] = ["durchgezogen", "gestrichelt", "keine"]
-        line_style_dropdown.set("durchgezogen")  # Default line style is solid
-        line_style_dropdown.grid(row=0, column=8, padx=5)
+        line_style_dropdown = self.create_dropdown(row_frame, ["durchgezogen", "gestrichelt", "keine"], 0, 8, default_value="durchgezogen", width=10)
 
         # Marker style dropdown
-        marker_dropdown = ttk.Combobox(row_frame, state="readonly", width=6)
-        marker_dropdown["values"] = ["keine", "Kreis", "+", "Dreieck", "Quadrat"]
-        marker_dropdown.set("keine")  # Default marker is none
-        marker_dropdown.grid(row=0, column=9, padx=5)
+        marker_dropdown = self.create_dropdown(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
 
         # Add to list of rows
         self.rows.append((file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame))
