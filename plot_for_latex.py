@@ -306,16 +306,33 @@ class CSVPlotterApp:
             self.plot_settings['grid'] = grid_var.get()
             self.plot_settings['linreg'] = linreg_var.get()  # Hinzufügen der LinReg-Option
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
-            # x_ticks und y_ticks in apply_settings als Liste von Floats speichern
+            
+            def parse_ticks(ticks_input):
+                try:
+                    # Prüfen auf 'start:step:end' Format
+                    if ":" in ticks_input:
+                        parts = ticks_input.split(":")
+                        if len(parts) == 3:
+                            start, step, end = map(float, parts)
+                            return list(np.arange(start, end + step, step))
+                        else:
+                            raise ValueError("Ungültiges Format. Verwenden Sie 'start:step:end' oder eine durch Kommas getrennte Liste.")
+                    # Falls kein ':', versuchen, die Werte als durch Kommas getrennte Liste zu lesen
+                    else:
+                        return [float(tick) for tick in ticks_input.split(",") if tick.strip()]
+                except ValueError as e:
+                    raise ValueError("Ungültiges Format für Ticks. Verwenden Sie 'start:step:end' oder eine durch Kommas getrennte Liste.")
+
+            # Aktualisieren der plot_settings für x_ticks und y_ticks
             try:
-                self.plot_settings['x_ticks'] = [float(x) for x in x_ticks_entry.get().split(',') if x.strip()]
-            except ValueError:
-                self.show_error("Invalid x_ticks format. Ensure values are comma-separated numbers.")
+                self.plot_settings['x_ticks'] = parse_ticks(x_ticks_entry.get())
+            except ValueError as ve:
+                self.show_error(str(ve))
 
             try:
-                self.plot_settings['y_ticks'] = [float(y) for y in y_ticks_entry.get().split(',') if y.strip()]
-            except ValueError:
-                self.show_error("Invalid y_ticks format. Ensure values are comma-separated numbers.")
+                self.plot_settings['y_ticks'] = parse_ticks(y_ticks_entry.get())
+            except ValueError as ve:
+                self.show_error(str(ve))
 
 
             # Plot aktualisieren
