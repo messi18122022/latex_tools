@@ -306,10 +306,17 @@ class CSVPlotterApp:
             self.plot_settings['grid'] = grid_var.get()
             self.plot_settings['linreg'] = linreg_var.get()  # Hinzufügen der LinReg-Option
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
-            if self.plot_settings['x_ticks'] is not None:
-                ax.set_xticks(self.plot_settings['x_ticks'])
-            if self.plot_settings['y_ticks'] is not None:
-                ax.set_yticks(self.plot_settings['y_ticks'])
+            # x_ticks und y_ticks in apply_settings als Liste von Floats speichern
+            try:
+                self.plot_settings['x_ticks'] = [float(x) for x in x_ticks_entry.get().split(',') if x.strip()]
+            except ValueError:
+                self.show_error("Invalid x_ticks format. Ensure values are comma-separated numbers.")
+
+            try:
+                self.plot_settings['y_ticks'] = [float(y) for y in y_ticks_entry.get().split(',') if y.strip()]
+            except ValueError:
+                self.show_error("Invalid y_ticks format. Ensure values are comma-separated numbers.")
+
 
             # Plot aktualisieren
             try:
