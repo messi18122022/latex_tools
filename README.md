@@ -1,7 +1,7 @@
 # Verknüpfung im eigene Verzeichnis erstellen; Windows
 
 ## 1. Git installieren
-   - Gehe zur [offiziellen Git-Website](https://git-scm.com/) und lade die Windows-Version herunter.
+   - Gehe zur [offiziellen Git-Website](https://git-scm.com/downloads/win) und lade die Windows-Version herunter.
    - Starte die .exe-Datei und folge den Anweisungen des Installationsassistenten (Standardoptionen sind ausreichend).
 
 ## 2. GitHub-Repository klonen
