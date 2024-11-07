@@ -73,6 +73,13 @@
 ## Latex installieren (wichtig)
 Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst geht der Plotter NICHT.
 
+---
+## Alle Module runterladen
+Gib im Terminal folgenden befehl ein und drücke Enter:
+```bash
+pip3 install pandas matplotlib numpy scipy seaborn
+```
+
 Damit ist die Einrichtung abgeschlossen.
 
 ---
