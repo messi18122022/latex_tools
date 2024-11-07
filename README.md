@@ -75,7 +75,7 @@ Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst
 
 ---
 ## Alle Module runterladen
-Gib im Terminal folgenden befehl ein und drücke Enter:
+Gib im Terminal von VSCode folgenden befehl ein und drücke Enter:
 ```bash
 pip3 install pandas matplotlib numpy scipy seaborn
 ```
