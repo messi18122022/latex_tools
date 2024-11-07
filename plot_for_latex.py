@@ -93,11 +93,30 @@ class CSVPlotterApp:
         entry.grid(row=row, column=column, pady=5)
         return entry
 
-    def create_dropdown(self, frame, options, row, column, default_value=None, width=10):
+    def create_dropdown2(self, frame, options, row, column, default_value=None, width=10):
         dropdown = ttk.Combobox(frame, state="readonly", values=options, width=width)
         if default_value:
             dropdown.set(default_value)
         dropdown.grid(row=row, column=column, padx=5)
+        return dropdown
+
+    def create_label_entry(self, frame, label_text, default_value, row):
+        tk.Label(frame, text=label_text).grid(row=row, column=0, sticky="w")
+        entry = tk.Entry(frame)
+        entry.insert(0, str(default_value) if default_value is not None else "")
+        entry.grid(row=row, column=1, sticky="w")
+        return entry
+
+    def create_checkbox(self, frame, text, variable, row):
+        checkbox = tk.Checkbutton(frame, text=text, variable=variable)
+        checkbox.grid(row=row, column=0, columnspan=2, sticky="w")
+        return checkbox
+
+    def create_dropdown(self, frame, label_text, options, default_value, row):
+        tk.Label(frame, text=label_text).grid(row=row, column=0, sticky="w")
+        dropdown = ttk.Combobox(frame, state="readonly", values=options, width=15)
+        dropdown.set(default_value)
+        dropdown.grid(row=row, column=1, sticky="w")
         return dropdown
 
     def show_error(self, message):
@@ -221,17 +240,17 @@ class CSVPlotterApp:
         row_frame = tk.Frame(self.table_frame)
         row_frame.pack(pady=5, fill="x")
 
-        file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
+        file_dropdown_x = self.create_dropdown2(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
 
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
-        file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
+        file_dropdown_y = self.create_dropdown2(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
 
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
-        visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
+        visibility_dropdown = self.create_dropdown2(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
 
         name_entry = tk.Entry(row_frame, width=20)
         name_entry.insert(0, "Legend Name")
@@ -249,10 +268,10 @@ class CSVPlotterApp:
         line_width_entry.grid(row=0, column=7, padx=5)
 
         # Line style dropdown
-        line_style_dropdown = self.create_dropdown(row_frame, ["durchgezogen", "gestrichelt", "keine"], 0, 8, default_value="durchgezogen", width=10)
+        line_style_dropdown = self.create_dropdown2(row_frame, ["durchgezogen", "gestrichelt", "keine"], 0, 8, default_value="durchgezogen", width=10)
 
         # Marker style dropdown
-        marker_dropdown = self.create_dropdown(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
+        marker_dropdown = self.create_dropdown2(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
 
         # Add to list of rows
         self.rows.append((file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame))
@@ -282,11 +301,61 @@ class CSVPlotterApp:
         # Neues Fenster für Plot und Einstellungen erstellen
         plot_window = tk.Toplevel(self.root)
         plot_window.title("Plot")
-        plot_window.geometry("1000x600")  # Fenstergröße für Plot und Einstellungen
+        plot_window.geometry("1000x600")
 
         # Frame für Plot-Einstellungen auf der linken Seite
         settings_frame = tk.Frame(plot_window, padx=10, pady=10)
         settings_frame.pack(side=tk.LEFT, fill=tk.Y)
+
+        # Einstellungsfelder für Plot-Einstellungen erstellen
+        x_label_entry = self.create_label_entry(settings_frame, "X-axis Label:", self.plot_settings['x_label'], row=0)
+        y_label_entry = self.create_label_entry(settings_frame, "Y-axis Label:", self.plot_settings['y_label'], row=1)
+        x_min_entry = self.create_label_entry(settings_frame, "X Min:", self.plot_settings['x_min'], row=2)
+        x_max_entry = self.create_label_entry(settings_frame, "X Max:", self.plot_settings['x_max'], row=3)
+        y_min_entry = self.create_label_entry(settings_frame, "Y Min:", self.plot_settings['y_min'], row=4)
+        y_max_entry = self.create_label_entry(settings_frame, "Y Max:", self.plot_settings['y_max'], row=5)
+        width_entry = self.create_label_entry(settings_frame, "Width (cm):", self.plot_settings['width_cm'], row=6)
+        height_entry = self.create_label_entry(settings_frame, "Height (cm):", self.plot_settings['height_cm'], row=7)
+
+        legend_position_dropdown = self.create_dropdown(
+            settings_frame, "Legend Position:", ["oben rechts", "oben links", "unten rechts", "unten links"], 
+            self.plot_settings['legend_position'], row=8)
+
+        invert_x_axis_var = tk.BooleanVar(value=self.plot_settings['invert_x_axis'])
+        invert_x_axis_checkbox = self.create_checkbox(settings_frame, "Invert X-axis", invert_x_axis_var, row=9)
+
+        log_x_axis_var = tk.BooleanVar(value=self.plot_settings['log_x_axis'])
+        log_x_axis_checkbox = self.create_checkbox(settings_frame, "Logarithmic X-axis", log_x_axis_var, row=10)
+
+        log_y_axis_var = tk.BooleanVar(value=self.plot_settings['log_y_axis'])
+        log_y_axis_checkbox = self.create_checkbox(settings_frame, "Logarithmic Y-axis", log_y_axis_var, row=11)
+
+        grid_var = tk.BooleanVar(value=self.plot_settings['grid'])
+        grid_checkbox = self.create_checkbox(settings_frame, "Grid anzeigen", grid_var, row=12)
+
+        linreg_var = tk.BooleanVar(value=self.plot_settings.get('linreg', False))
+        linreg_checkbox = self.create_checkbox(settings_frame, "LinReg", linreg_var, row=13)
+
+        corr_pos_dropdown = self.create_dropdown(
+            settings_frame, "Position Korrelationskoeffizient:", 
+            ["oben rechts", "oben links", "unten rechts", "unten links"], 
+            self.plot_settings.get('corr_pos', "oben rechts"), row=14)
+
+        x_ticks_entry = self.create_label_entry(
+            settings_frame, "X Ticks (comma-separated):", 
+            ','.join(map(str, self.plot_settings['x_ticks'])) if self.plot_settings['x_ticks'] else "", row=15)
+        
+        y_ticks_entry = self.create_label_entry(
+            settings_frame, "Y Ticks (comma-separated):", 
+            ','.join(map(str, self.plot_settings['y_ticks'])) if self.plot_settings['y_ticks'] else "", row=16)
+
+        # "Plot aktualisieren" Button
+        tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings).grid(row=17, column=0, columnspan=2, pady=10)
+
+        # Erstelle das Plot-Fenster
+        fig, ax = plt.subplots(figsize=(6, 4))
+        canvas = FigureCanvasTkAgg(fig, master=plot_window)
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         # Funktion zur Anwendung und Aktualisierung der Einstellungen
         def apply_settings():
@@ -304,12 +373,12 @@ class CSVPlotterApp:
             self.plot_settings['log_x_axis'] = log_x_axis_var.get()
             self.plot_settings['log_y_axis'] = log_y_axis_var.get()
             self.plot_settings['grid'] = grid_var.get()
-            self.plot_settings['linreg'] = linreg_var.get()  # Hinzufügen der LinReg-Option
-            self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
-            
+            self.plot_settings['linreg'] = linreg_var.get()
+            self.plot_settings['corr_pos'] = corr_pos_dropdown.get()
+
+            # Parse x_ticks and y_ticks
             def parse_ticks(ticks_input):
                 try:
-                    # Prüfen auf 'start:step:end' Format
                     if ":" in ticks_input:
                         parts = ticks_input.split(":")
                         if len(parts) == 3:
@@ -317,7 +386,6 @@ class CSVPlotterApp:
                             return list(np.arange(start, end + step, step))
                         else:
                             raise ValueError("Ungültiges Format. Verwenden Sie 'start:step:end' oder eine durch Kommas getrennte Liste.")
-                    # Falls kein ':', versuchen, die Werte als durch Kommas getrennte Liste zu lesen
                     else:
                         return [float(tick) for tick in ticks_input.split(",") if tick.strip()]
                 except ValueError as e:
@@ -334,112 +402,15 @@ class CSVPlotterApp:
             except ValueError as ve:
                 self.show_error(str(ve))
 
-
             # Plot aktualisieren
             try:
                 update_plot()
             except Exception as e:
                 self.show_error("Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
-        # Einstellungsfelder für Plot-Einstellungen erstellen
-        tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
-        x_label_entry = tk.Entry(settings_frame)
-        x_label_entry.insert(0, self.plot_settings['x_label'])
-        x_label_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y-axis Label:").pack(anchor="w")
-        y_label_entry = tk.Entry(settings_frame)
-        y_label_entry.insert(0, self.plot_settings['y_label'])
-        y_label_entry.pack(anchor="w")
-
-        # Min/Max Eingaben für Achsen und weitere Einstellungen
-        tk.Label(settings_frame, text="X Min:").pack(anchor="w")
-        x_min_entry = tk.Entry(settings_frame)
-        x_min_entry.insert(0, str(self.plot_settings['x_min']) if self.plot_settings['x_min'] is not None else "")
-        x_min_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="X Max:").pack(anchor="w")
-        x_max_entry = tk.Entry(settings_frame)
-        x_max_entry.insert(0, str(self.plot_settings['x_max']) if self.plot_settings['x_max'] is not None else "")
-        x_max_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Min:").pack(anchor="w")
-        y_min_entry = tk.Entry(settings_frame)
-        y_min_entry.insert(0, str(self.plot_settings['y_min']) if self.plot_settings['y_min'] is not None else "")
-        y_min_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Max:").pack(anchor="w")
-        y_max_entry = tk.Entry(settings_frame)
-        y_max_entry.insert(0, str(self.plot_settings['y_max']) if self.plot_settings['y_max'] is not None else "")
-        y_max_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Width (cm):").pack(anchor="w")
-        width_entry = tk.Entry(settings_frame)
-        width_entry.insert(0, str(self.plot_settings['width_cm']))
-        width_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Height (cm):").pack(anchor="w")
-        height_entry = tk.Entry(settings_frame)
-        height_entry.insert(0, str(self.plot_settings['height_cm']))
-        height_entry.pack(anchor="w")
-
-        # Plot-Einstellungen für Legendenposition
-        tk.Label(settings_frame, text="Legend Position:").pack(anchor="w")
-        legend_position_dropdown = ttk.Combobox(settings_frame, state="readonly")
-        legend_position_dropdown["values"] = ["oben rechts", "oben links", "unten rechts", "unten links"]
-        legend_position_dropdown.set(self.plot_settings['legend_position'])
-        legend_position_dropdown.pack(anchor="w")
-
-        invert_x_axis_var = tk.BooleanVar(value=self.plot_settings['invert_x_axis'])
-        invert_x_axis_checkbox = tk.Checkbutton(settings_frame, text="Invert X-axis", variable=invert_x_axis_var)
-        invert_x_axis_checkbox.pack(anchor="w")
-
-        # Einstellungen für log-Skala, Gitter, Ticks
-        log_x_axis_var = tk.BooleanVar(value=self.plot_settings['log_x_axis'])
-        log_x_axis_checkbox = tk.Checkbutton(settings_frame, text="Logarithmic X-axis", variable=log_x_axis_var)
-        log_x_axis_checkbox.pack(anchor="w")
-
-        log_y_axis_var = tk.BooleanVar(value=self.plot_settings['log_y_axis'])
-        log_y_axis_checkbox = tk.Checkbutton(settings_frame, text="Logarithmic Y-axis", variable=log_y_axis_var)
-        log_y_axis_checkbox.pack(anchor="w")
-
-        grid_var = tk.BooleanVar(value=self.plot_settings['grid'])
-        grid_checkbox = tk.Checkbutton(settings_frame, text="Grid anzeigen", variable=grid_var)
-        grid_checkbox.pack(anchor="w")
-
-        linreg_var = tk.BooleanVar(value=self.plot_settings.get('linreg', False))
-        linreg_checkbox = tk.Checkbutton(settings_frame, text="LinReg", variable=linreg_var)
-        linreg_checkbox.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Position Korrelationskoeffizient:").pack(anchor="w")
-        corr_pos_dropdown = ttk.Combobox(settings_frame, state="readonly")
-        corr_pos_dropdown["values"] = ["oben rechts", "oben links", "unten rechts", "unten links"]
-        corr_pos_dropdown.set(self.plot_settings.get('corr_pos', "oben rechts"))
-        corr_pos_dropdown.pack(anchor="w")
-
-        tk.Label(settings_frame, text="X Ticks (comma-separated):").pack(anchor="w")
-        x_ticks_entry = tk.Entry(settings_frame)
-        x_ticks_entry.insert(0, ','.join(map(str, self.plot_settings['x_ticks'])) if self.plot_settings['x_ticks'] else "")
-        x_ticks_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Ticks (comma-separated):").pack(anchor="w")
-        y_ticks_entry = tk.Entry(settings_frame)
-        y_ticks_entry.insert(0, ','.join(map(str, self.plot_settings['y_ticks'])) if self.plot_settings['y_ticks'] else "")
-        y_ticks_entry.pack(anchor="w")
-
-        # "Plot aktualisieren" Button
-        update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
-        update_button.pack(pady=10)
-
-        # Erstelle das Plot-Fenster
-        fig, ax = plt.subplots(figsize=(6, 4))
-        canvas = FigureCanvasTkAgg(fig, master=plot_window)
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
         def update_plot():
             ax.clear()
             
-            # Zähle die sichtbaren Linien, um die Bedingung für die Legende zu prüfen
             visible_lines = 0
             for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
                 selected_file_x = file_dropdown_x.get()
@@ -453,19 +424,8 @@ class CSVPlotterApp:
                 line_style = line_style_dropdown.get()
                 marker = marker_dropdown.get()
 
-                # Map line style and marker to matplotlib options
-                line_style_map = {
-                    "durchgezogen": '-',
-                    "gestrichelt": '--',
-                    "keine": ''
-                }
-                marker_map = {
-                    "keine": '',
-                    "Kreis": 'o',
-                    "+": '+',
-                    "Dreieck": '^',
-                    "Quadrat": 's'
-                }
+                line_style_map = {"durchgezogen": '-', "gestrichelt": '--', "keine": ''}
+                marker_map = {"keine": '', "Kreis": 'o', "+": '+', "Dreieck": '^', "Quadrat": 's'}
 
                 linestyle = line_style_map.get(line_style, '-')
                 mark = marker_map.get(marker, '')
@@ -477,17 +437,14 @@ class CSVPlotterApp:
                     y_data = df_y[y_column].to_numpy()
 
                     try:
-                        # Plot the original data with settings
                         ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark)
                         visible_lines += 1
 
-                        # Linear regression if selected
                         if self.plot_settings.get('linreg', False):
                             slope, intercept, r_value, _, _ = stats.linregress(x_data, y_data)
                             reg_line = slope * x_data + intercept
                             ax.plot(x_data, reg_line, color="black", linewidth=0.5, label=f"LinReg ({legend_name})")
 
-                            # Display correlation coefficient
                             r_text = f"r = {r_value:.4f}"
                             corr_pos_map = {
                                 "oben rechts": (0.8, 0.95),
@@ -496,22 +453,19 @@ class CSVPlotterApp:
                                 "unten links": (0.1, 0.1)
                             }
                             pos_x, pos_y = corr_pos_map.get(self.plot_settings.get('corr_pos', 'oben rechts'))
-
-                            # Add the correlation coefficient box
                             box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
                             ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
                     
                     except Exception as e:
                         self.show_error(f"Fehlerhafte LaTeX-Syntax in der Legende: '{legend_name}'. Bitte überprüfen.")
-                        return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
+                        return
 
-            # Apply axis labels and limits with LaTeX error handling
             try:
                 ax.set_xlabel(self.plot_settings['x_label'])
                 ax.set_ylabel(self.plot_settings['y_label'])
             except Exception as e:
                 self.show_error("Fehlerhafte LaTeX-Syntax in den Achsenbeschriftungen. Bitte überprüfen.")
-                return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
+                return
 
             if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
                 ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
@@ -536,7 +490,6 @@ class CSVPlotterApp:
             if self.plot_settings['grid']:
                 ax.grid(True)
 
-            # Show legend if more than one visible line exists
             if visible_lines > 1:
                 try:
                     legend_position_map = {
@@ -549,7 +502,7 @@ class CSVPlotterApp:
                     ax.legend(loc=legend_position)
                 except Exception as e:
                     self.show_error("Fehlerhafte LaTeX-Syntax in der Legendenposition. Bitte überprüfen.")
-                    return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
+                    return
 
             canvas.draw()
 
