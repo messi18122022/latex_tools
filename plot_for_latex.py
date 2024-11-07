@@ -306,8 +306,10 @@ class CSVPlotterApp:
             self.plot_settings['grid'] = grid_var.get()
             self.plot_settings['linreg'] = linreg_var.get()  # Hinzufügen der LinReg-Option
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
-            self.plot_settings['x_ticks'] = list(map(float, x_ticks_entry.get().split(','))) if x_ticks_entry.get() else None
-            self.plot_settings['y_ticks'] = list(map(float, y_ticks_entry.get().split(','))) if y_ticks_entry.get() else None
+            if self.plot_settings['x_ticks'] is not None:
+                ax.set_xticks(self.plot_settings['x_ticks'])
+            if self.plot_settings['y_ticks'] is not None:
+                ax.set_yticks(self.plot_settings['y_ticks'])
 
             # Plot aktualisieren
             try:
@@ -500,6 +502,12 @@ class CSVPlotterApp:
                 ax.set_xscale('log')
             if self.plot_settings['log_y_axis']:
                 ax.set_yscale('log')
+
+            if self.plot_settings['x_ticks'] is not None:
+                ax.set_xticks(self.plot_settings['x_ticks'])
+
+            if self.plot_settings['y_ticks'] is not None:
+                ax.set_yticks(self.plot_settings['y_ticks'])
 
             if self.plot_settings['grid']:
                 ax.grid(True)
@@ -728,6 +736,13 @@ class CSVPlotterApp:
         # Setze die Achsenbeschriftungen und -limits
         ax.set_xlabel(self.plot_settings['x_label'])
         ax.set_ylabel(self.plot_settings['y_label'])
+
+        # x_ticks und y_ticks setzen
+        if self.plot_settings['x_ticks'] is not None:
+            ax.set_xticks(self.plot_settings['x_ticks'])
+        
+        if self.plot_settings['y_ticks'] is not None:
+            ax.set_yticks(self.plot_settings['y_ticks'])
         
         if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
             ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
@@ -837,6 +852,13 @@ class CSVPlotterApp:
 
         if self.plot_settings['invert_x_axis']:
             ax.invert_xaxis()
+
+        # x_ticks und y_ticks setzen
+        if self.plot_settings['x_ticks'] is not None:
+            ax.set_xticks(self.plot_settings['x_ticks'])
+        
+        if self.plot_settings['y_ticks'] is not None:
+            ax.set_yticks(self.plot_settings['y_ticks'])
 
         if self.plot_settings['log_x_axis']:
             ax.set_xscale('log')
