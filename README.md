@@ -1,59 +1,73 @@
 # Verknüpfung im eigenen Verzeichnis erstellen: Windows
 
-1. **Git installieren**:  
-   - Lade Git von [hier](https://git-scm.com/downloads/win) herunter und installiere es (einfach auf „Weiter“ klicken).
+1. **Git installieren**:
+   - Lade Git von [hier](https://git-scm.com/downloads/win) herunter und installiere es (immer auf „Weiter“ klicken).
 
-2. **GitHub-Repository klonen**:  
-   - **Git Bash öffnen**: Suche „Git Bash“ im Startmenü und öffne es.  
+2. **GitHub-Repository klonen**:
+   - **Git Bash öffnen**: Drücke die **Windows-Taste**, suche nach „Git Bash“ und öffne das Programm.
    - **Zum Ordner wechseln, wo du die Verknüpfung speichern willst**:
-     ```bash
-     cd /Pfad/zum/Ordner
-     ```
+     - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
+       ```bash
+       cd /Pfad/zum/Ordner
+       ```
+     - Ersetze `/Pfad/zum/Ordner` durch den Ordner, in dem du die Dateien haben willst (z. B. `C:/Benutzer/DeinName/Downloads`).
    - **Repository klonen**:
-     ```bash
-     git clone https://github.com/messi18122022/latex_tools.git
-     ```
-   - **Ordner öffnen**:
-     ```bash
-     cd latex_tools
-     ```
-   - **Bevor du die Dateien nutzt, Updates holen**:
+     - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
+       ```bash
+       git clone https://github.com/messi18122022/latex_tools.git
+       ```
+   - **Ordner mit den neuen Dateien öffnen**:
+     - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
+       ```bash
+       cd latex_tools
+       ```
+
+3. **Dateien in VSCode öffnen**:
+   - Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
+   - **Um immer die neuesten Updates zu bekommen**: Öffne das Terminal in VSCode (oben im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
      ```bash
      git pull
      ```
-
 ---
-
 # Verknüpfung im eigenen Verzeichnis erstellen: macOS
 
 1. **Git installieren**:
    - **Überprüfen**:
-     ```bash
-     git --version
-     ```
-   - **Falls nötig**:
-     ```bash
-     brew install git
-     ```
+     - Öffne das **Terminal** (über die Lupe rechts oben) und kopiere diesen Befehl, drücke dann **Enter**:
+       ```bash
+       git --version
+       ```
+   - **Falls nötig installieren**:
+     - Falls Git nicht installiert ist und du Homebrew hast, kopiere diesen Befehl, drücke **Enter**:
+       ```bash
+       brew install git
+       ```
 
-2. **GitHub-Repository klonen**:  
+2. **GitHub-Repository klonen**:
    - **Terminal öffnen** und zum Ordner wechseln, wo du die Verknüpfung speichern willst:
-     ```bash
-     cd /Pfad/zum/Ordner
-     ```
+     - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
+       ```bash
+       cd /Pfad/zum/Ordner
+       ```
+     - Ersetze `/Pfad/zum/Ordner` durch den Pfad deines Ordners.
    - **Repository klonen**:
-     ```bash
-     git clone https://github.com/messi18122022/latex_tools.git
-     ```
+     - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
+       ```bash
+       git clone https://github.com/messi18122022/latex_tools.git
+       ```
    - **Ordner öffnen**:
-     ```bash
-     cd latex_tools
-     ```
-   - **Bevor du die Dateien nutzt, Updates holen**:
+     - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
+       ```bash
+       cd latex_tools
+       ```
+
+3. **Dateien in VSCode öffnen**:
+   - Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
+   - **Um immer die neuesten Updates zu bekommen**: Öffne das Terminal in VSCode (im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
      ```bash
      git pull
      ```
-
+---
 # plot for latex App - Benutzerhandbuch
 
 **plot for latex App** ist eine Anwendung, mit der Sie ganz einfach Diagramme aus CSV-Dateien erstellen, anpassen und exportieren können. Sie können Daten aus verschiedenen Quellen visualisieren und so Ihre Datenanalyse unterstützen, ohne programmieren zu müssen.
