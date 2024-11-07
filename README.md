@@ -73,6 +73,8 @@
 ## Latex installieren (wichtig)
 Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst geht der Plotter NICHT.
 
+Damit ist die Einrichtung abgeschlossen.
+
 ---
 # plot for latex App - Benutzerhandbuch
 
