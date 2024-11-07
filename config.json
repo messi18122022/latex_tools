@@ -1,0 +1,19 @@
+{
+    "plot_settings": {
+        "x_label": "X-axis Label",
+        "y_label": "Y-axis Label",
+        "x_min": null,
+        "x_max": null,
+        "y_min": null,
+        "y_max": null,
+        "width_cm": 16,
+        "height_cm": 6.7,
+        "legend_position": "oben rechts",
+        "invert_x_axis": false,
+        "log_x_axis": false,
+        "log_y_axis": false,
+        "grid": true,
+        "x_ticks": null,
+        "y_ticks": null
+    }
+}

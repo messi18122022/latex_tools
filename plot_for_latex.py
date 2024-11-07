@@ -43,25 +43,6 @@ class CSVPlotterApp:
         self.rows = []
         self.canvas = None  # Store the canvas to update or clear it
 
-        # Placeholder for plot settings
-        self.plot_settings = {
-            'x_label': 'X-axis Label',
-            'y_label': 'Y-axis Label',
-            'x_min': None,
-            'x_max': None,
-            'y_min': None,
-            'y_max': None,
-            'width_cm': 16,
-            'height_cm': 6.7,
-            'legend_position': 'oben rechts',
-            'invert_x_axis': False,  # New setting for inverting the X-axis
-            'log_x_axis': False,     # New setting for logarithmic X-axis
-            'log_y_axis': False,     # New setting for logarithmic Y-axis
-            'grid': True,            # New setting for enabling/disabling grid
-            'x_ticks': None,         # New setting for custom x-ticks
-            'y_ticks': None          # New setting for custom y-ticks
-        }
-
         # Eingabefelder für Caption und Label
         self.caption_label = tk.Label(self.file_frame, text="Caption:")
         self.caption_label.grid(row=3, column=0, pady=5, sticky="w")
@@ -92,6 +73,14 @@ class CSVPlotterApp:
 
         self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
         self.load_project_button.grid(row=1, column=3, pady=5)
+
+        self.plot_settings = self.load_config()["plot_settings"]
+
+    def load_config(self):
+        """Lade Konfiguration aus config.json"""
+        with open("config.json", "r") as f:
+            config = json.load(f)
+        return config
 
     def create_button(self, frame, text, command, row, column, width=20):
         button = tk.Button(frame, text=text, command=command, width=width)
