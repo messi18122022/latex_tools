@@ -26,7 +26,7 @@
 
 3. **Dateien in VSCode öffnen**:
    - Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
-   - **Um immer die neuesten Updates zu bekommen**: Öffne das Terminal in VSCode (oben im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
+   - **Um immer die neuesten Updates zu bekommen**: Das musst du jedes Mal kurz eingeben, bevor du den Plotter verwendest. Öffne das Terminal in VSCode (oben im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
      ```bash
      git pull
      ```
