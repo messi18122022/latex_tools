@@ -1,4 +1,6 @@
-# Verknüpfung im eigenen Verzeichnis erstellen: Windows
+# Einrichten
+
+## Verknüpfung im eigenen Verzeichnis erstellen: Windows
 
 1. **Git installieren**:
    - Lade Git von [hier](https://git-scm.com/downloads/win) herunter und installiere es (immer auf „Weiter“ klicken).
@@ -29,7 +31,7 @@
      git pull
      ```
 ---
-# Verknüpfung im eigenen Verzeichnis erstellen: macOS
+## Verknüpfung im eigenen Verzeichnis erstellen: macOS
 
 1. **Git installieren**:
    - **Überprüfen**:
@@ -67,6 +69,9 @@
      ```bash
      git pull
      ```
+---
+## Latex installieren (wichtig)
+Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst geht der Plotter NICHT.
 ---
 # plot for latex App - Benutzerhandbuch
 
