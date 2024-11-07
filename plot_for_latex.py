@@ -43,25 +43,6 @@ class CSVPlotterApp:
         self.rows = []
         self.canvas = None  # Store the canvas to update or clear it
 
-        # Placeholder for plot settings
-        self.plot_settings = {
-            'x_label': 'X-axis Label',
-            'y_label': 'Y-axis Label',
-            'x_min': None,
-            'x_max': None,
-            'y_min': None,
-            'y_max': None,
-            'width_cm': 16,
-            'height_cm': 6.7,
-            'legend_position': 'oben rechts',
-            'invert_x_axis': False,  # New setting for inverting the X-axis
-            'log_x_axis': False,     # New setting for logarithmic X-axis
-            'log_y_axis': False,     # New setting for logarithmic Y-axis
-            'grid': True,            # New setting for enabling/disabling grid
-            'x_ticks': None,         # New setting for custom x-ticks
-            'y_ticks': None          # New setting for custom y-ticks
-        }
-
         # Eingabefelder für Caption und Label
         self.caption_label = tk.Label(self.file_frame, text="Caption:")
         self.caption_label.grid(row=3, column=0, pady=5, sticky="w")
@@ -93,6 +74,14 @@ class CSVPlotterApp:
         self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
         self.load_project_button.grid(row=1, column=3, pady=5)
 
+        self.plot_settings = self.load_config()["plot_settings"]
+
+    def load_config(self):
+        """Lade Konfiguration aus config.json"""
+        with open("config.json", "r") as f:
+            config = json.load(f)
+        return config
+
     def create_button(self, frame, text, command, row, column, width=20):
         button = tk.Button(frame, text=text, command=command, width=width)
         button.grid(row=row, column=column, pady=5)
@@ -110,6 +99,9 @@ class CSVPlotterApp:
             dropdown.set(default_value)
         dropdown.grid(row=row, column=column, padx=5)
         return dropdown
+
+    def show_error(self, message):
+        tk.messagebox.showerror("Fehler", message)
 
     def save_project(self):
         # Dialog zum Speichern des Projekts öffnen
@@ -196,7 +188,7 @@ class CSVPlotterApp:
                         try:
                             df = pd.read_csv(file_path, delimiter='\t')
                         except pd.errors.ParserError:
-                            tk.messagebox.showerror("Fehler", f"Die Datei {file_path} konnte nicht geladen werden. Bitte prüfen Sie das Dateiformat.")
+                            self.show_error(f"Die Datei {file_path} konnte nicht geladen werden. Bitte prüfen Sie das Dateiformat.")
                             continue
                 file_name = file_path.split('/')[-1]  # Get the file name from path
                 self.dataframes[file_name] = df
@@ -321,7 +313,7 @@ class CSVPlotterApp:
             try:
                 update_plot()
             except Exception as e:
-                tk.messagebox.showerror("LaTeX Error", "Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
+                self.show_error("Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
         # Einstellungsfelder für Plot-Einstellungen erstellen
         tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
@@ -484,7 +476,7 @@ class CSVPlotterApp:
                             ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
                     
                     except Exception as e:
-                        tk.messagebox.showerror("LaTeX Error", f"Fehlerhafte LaTeX-Syntax in der Legende: '{legend_name}'. Bitte überprüfen.")
+                        self.show_error(f"Fehlerhafte LaTeX-Syntax in der Legende: '{legend_name}'. Bitte überprüfen.")
                         return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
             # Apply axis labels and limits with LaTeX error handling
@@ -492,7 +484,7 @@ class CSVPlotterApp:
                 ax.set_xlabel(self.plot_settings['x_label'])
                 ax.set_ylabel(self.plot_settings['y_label'])
             except Exception as e:
-                tk.messagebox.showerror("LaTeX Error", "Fehlerhafte LaTeX-Syntax in den Achsenbeschriftungen. Bitte überprüfen.")
+                self.show_error("Fehlerhafte LaTeX-Syntax in den Achsenbeschriftungen. Bitte überprüfen.")
                 return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
             if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
@@ -524,7 +516,7 @@ class CSVPlotterApp:
                     legend_position = legend_position_map.get(self.plot_settings['legend_position'], 'upper right')
                     ax.legend(loc=legend_position)
                 except Exception as e:
-                    tk.messagebox.showerror("LaTeX Error", "Fehlerhafte LaTeX-Syntax in der Legendenposition. Bitte überprüfen.")
+                    self.show_error("Fehlerhafte LaTeX-Syntax in der Legendenposition. Bitte überprüfen.")
                     return  # Abbrechen, um das fehlerhafte Plotten zu vermeiden
 
             canvas.draw()
