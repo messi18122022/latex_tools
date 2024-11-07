@@ -1,61 +1,58 @@
-# Verknüpfung im eigene Verzeichnis erstellen; Windows
+# Verknüpfung im eigenen Verzeichnis erstellen: Windows
 
-## 1. Git installieren
-   - Gehe zur [offiziellen Git-Website](https://git-scm.com/downloads/win) und lade die Windows-Version herunter.
-   - Starte die .exe-Datei und folge den Anweisungen des Installationsassistenten (Standardoptionen sind ausreichend).
+1. **Git installieren**:  
+   - Lade Git von [hier](https://git-scm.com/downloads/win) herunter und installiere es (einfach auf „Weiter“ klicken).
 
-## 2. GitHub-Repository klonen
-   - **Git Bash öffnen**: Suche im Startmenü nach „Git Bash“ und öffne es.
-   - **Zum gewünschten Ordner wechseln**:
+2. **GitHub-Repository klonen**:  
+   - **Git Bash öffnen**: Suche „Git Bash“ im Startmenü und öffne es.  
+   - **Zum Ordner wechseln, wo du die Verknüpfung speichern willst**:
      ```bash
-     cd C:/Pfad/zum/Ordner
+     cd /Pfad/zum/Ordner
      ```
-   - **URL des Repositories kopieren**:
-     - Gehe auf GitHub, öffne das Repository und kopiere die URL unter „Code“.
    - **Repository klonen**:
      ```bash
-     git clone https://github.com/Benutzername/Repository-Name.git
+     git clone https://github.com/messi18122022/latex_tools.git
      ```
    - **Ordner öffnen**:
      ```bash
-     cd Repository-Name
+     cd latex_tools
      ```
-
-Jetzt kannst du die Dateien lesen, ohne sie zu verändern.
+   - **Bevor du die Dateien nutzt, Updates holen**:
+     ```bash
+     git pull
+     ```
 
 ---
 
-# Verknüpfung im eigene Verzeichnis erstellen; macOS
+# Verknüpfung im eigenen Verzeichnis erstellen: macOS
 
-## 1. Git installieren
-   - **Über das Terminal prüfen**: Git ist oft vorinstalliert. Überprüfe das mit:
+1. **Git installieren**:
+   - **Überprüfen**:
      ```bash
      git --version
      ```
-   - Wenn es nicht installiert ist, erscheint eine Aufforderung zur Installation von Git oder Xcode.
-   - **Alternativ über Homebrew installieren** (falls du Homebrew installiert hast):
+   - **Falls nötig**:
      ```bash
      brew install git
      ```
 
-## 2. GitHub-Repository klonen
-   - **Terminal öffnen** und in den gewünschten Ordner navigieren:
+2. **GitHub-Repository klonen**:  
+   - **Terminal öffnen** und zum Ordner wechseln, wo du die Verknüpfung speichern willst:
      ```bash
      cd /Pfad/zum/Ordner
      ```
-   - **URL des Repositories kopieren**:
-     - Öffne das Repository auf GitHub und kopiere die URL unter „Code“.
    - **Repository klonen**:
      ```bash
-     git clone https://github.com/Benutzername/Repository-Name.git
+     git clone https://github.com/messi18122022/latex_tools.git
      ```
    - **Ordner öffnen**:
      ```bash
-     cd Repository-Name
+     cd latex_tools
      ```
-
-Nun kannst du die Dateien im Repository einsehen, ohne Änderungen vorzunehmen.
-
+   - **Bevor du die Dateien nutzt, Updates holen**:
+     ```bash
+     git pull
+     ```
 
 # plot for latex App - Benutzerhandbuch
 
