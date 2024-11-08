@@ -16,10 +16,10 @@ plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = ['Computer Modern']
 plt.rcParams['text.latex.preamble'] = r'\usepackage{siunitx}'
 
-class CSVPlotterApp:
+class PlotGOAT:
     def __init__(self, root):
         self.root = root
-        self.root.title("CSV Plotter")
+        self.root.title("PlotGOAT")
         self.root.geometry("1500x1000")  # Set larger window size for better usability
 
         # Frame for file operations and buttons
@@ -903,5 +903,5 @@ class CSVPlotterApp:
 
 if __name__ == "__main__":
     root = tk.Tk()
-    app = CSVPlotterApp(root)
+    app = PlotGOAT(root)
     root.mainloop()
