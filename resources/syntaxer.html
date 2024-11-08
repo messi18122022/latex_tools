@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX Formelgenerator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .main-field, .output-field {
+            font-size: 1.5em;
+            margin-top: 10px;
+            display: inline-block;
+            text-align: center;
+            padding: 5px;
+        }
+        .symbol-field {
+            display: grid;
+            grid-template-areas: 
+                "sup-before main sup-after"
+                "sub-before main sub-after";
+            gap: 5px;
+        }
+        .symbol-field input {
+            width: 50px;
+            text-align: center;
+        }
+        #main-symbol {
+            width: 80px;
+            grid-area: main;
+            font-size: 1.5em;
+        }
+        #sup-before { grid-area: sup-before; }
+        #sub-before { grid-area: sub-before; }
+        #sup-after { grid-area: sup-after; }
+        #sub-after { grid-area: sub-after; }
+
+        .dropdown-symbol {
+            margin: 15px;
+        }
+        .greek-keyboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            max-width: 400px;
+            margin: auto;
+        }
+        .greek-keyboard button {
+            font-size: 1em;
+            padding: 5px;
+            cursor: pointer;
+        }
+        #output {
+            margin-top: 20px;
+            font-family: monospace;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>LaTeX Formelgenerator</h1>
+
+    <!-- Eingabefelder für das Hauptsymbol und seine Ecken -->
+    <div class="symbol-field">
+        <input type="text" id="sup-before" placeholder="Hochgestellt Links" onfocus="setActiveField(this)">
+        <input type="text" id="sub-before" placeholder="Tiefgestellt Links" onfocus="setActiveField(this)">
+        <input type="text" id="main-symbol" placeholder="Symbol" onfocus="setActiveField(this)">
+        <input type="text" id="sup-after" placeholder="Hochgestellt Rechts" onfocus="setActiveField(this)">
+        <input type="text" id="sub-after" placeholder="Tiefgestellt Rechts" onfocus="setActiveField(this)">
+    </div>
+
+    <!-- Dropdown für spezielle Symbole -->
+    <div class="dropdown-symbol">
+        <label for="symbol-select">Sonderzeichen:</label>
+        <select id="symbol-select">
+            <option value="">Kein Symbol</option>
+            <option value="\tilde">~ (Tilde)</option>
+            <option value="\bar">¯ (Gerader Strich)</option>
+            <option value="\dot">• (Punkt)</option>
+            <option value="\hat">^ (Dach)</option>
+        </select>
+    </div>
+
+    <!-- Griechische Buchstaben Tastatur -->
+    <div class="greek-keyboard">
+        <!-- Kleinbuchstaben -->
+        <button onclick="insertSymbol('α')">α</button>
+        <button onclick="insertSymbol('β')">β</button>
+        <button onclick="insertSymbol('γ')">γ</button>
+        <button onclick="insertSymbol('δ')">δ</button>
+        <button onclick="insertSymbol('ε')">ε</button>
+        <button onclick="insertSymbol('ζ')">ζ</button>
+        <button onclick="insertSymbol('η')">η</button>
+        <button onclick="insertSymbol('θ')">θ</button>
+        <button onclick="insertSymbol('ι')">ι</button>
+        <button onclick="insertSymbol('κ')">κ</button>
+        <button onclick="insertSymbol('λ')">λ</button>
+        <button onclick="insertSymbol('μ')">μ</button>
+        <button onclick="insertSymbol('ν')">ν</button>
+        <button onclick="insertSymbol('ξ')">ξ</button>
+        <button onclick="insertSymbol('ο')">ο</button>
+        <button onclick="insertSymbol('π')">π</button>
+        <button onclick="insertSymbol('ρ')">ρ</button>
+        <button onclick="insertSymbol('σ')">σ</button>
+        <button onclick="insertSymbol('τ')">τ</button>
+        <button onclick="insertSymbol('υ')">υ</button>
+        <button onclick="insertSymbol('φ')">φ</button>
+        <button onclick="insertSymbol('χ')">χ</button>
+        <button onclick="insertSymbol('ψ')">ψ</button>
+        <button onclick="insertSymbol('ω')">ω</button>
+        <button onclick="insertSymbol('ϵ')">ϵ</button> <!-- Alternative epsilon -->
+        <button onclick="insertSymbol('ϑ')">ϑ</button> <!-- Alternative theta -->
+        <button onclick="insertSymbol('ϖ')">ϖ</button> <!-- Alternative pi -->
+        <button onclick="insertSymbol('ϱ')">ϱ</button> <!-- Alternative rho -->
+        <button onclick="insertSymbol('ς')">ς</button> <!-- Alternative sigma -->
+        <button onclick="insertSymbol('ϕ')">ϕ</button> <!-- Alternative phi -->
+
+        <!-- Großbuchstaben -->
+        <button onclick="insertSymbol('Α')">Α</button>
+        <button onclick="insertSymbol('Β')">Β</button>
+        <button onclick="insertSymbol('Γ')">Γ</button>
+        <button onclick="insertSymbol('Δ')">Δ</button>
+        <button onclick="insertSymbol('Ε')">Ε</button>
+        <button onclick="insertSymbol('Ζ')">Ζ</button>
+        <button onclick="insertSymbol('Η')">Η</button>
+        <button onclick="insertSymbol('Θ')">Θ</button>
+        <button onclick="insertSymbol('Ι')">Ι</button>
+        <button onclick="insertSymbol('Κ')">Κ</button>
+        <button onclick="insertSymbol('Λ')">Λ</button>
+        <button onclick="insertSymbol('Μ')">Μ</button>
+        <button onclick="insertSymbol('Ν')">Ν</button>
+        <button onclick="insertSymbol('Ξ')">Ξ</button>
+        <button onclick="insertSymbol('Ο')">Ο</button>
+        <button onclick="insertSymbol('Π')">Π</button>
+        <button onclick="insertSymbol('Ρ')">Ρ</button>
+        <button onclick="insertSymbol('Σ')">Σ</button>
+        <button onclick="insertSymbol('Τ')">Τ</button>
+        <button onclick="insertSymbol('Υ')">Υ</button>
+        <button onclick="insertSymbol('Φ')">Φ</button>
+        <button onclick="insertSymbol('Χ')">Χ</button>
+        <button onclick="insertSymbol('Ψ')">Ψ</button>
+        <button onclick="insertSymbol('Ω')">Ω</button>
+    </div>
+
+
+    <!-- Button zum Generieren des LaTeX Codes -->
+    <button onclick="generateLatexCode()">Generate LaTeX Code</button>
+
+    <!-- Ausgabe des LaTeX Codes -->
+    <div id="output" class="output-field"></div>
+
+    <script>
+        // Globale Variablen für das aktive Feld und die Cursorposition
+        let activeElement = null;
+        let cursorPos = 0;
+
+        // Funktion zum Speichern des aktiven Eingabefeldes und der Cursorposition
+        function setActiveField(element) {
+            activeElement = element;
+            cursorPos = element.selectionStart;
+            element.addEventListener('keyup', updateCursorPos);
+        }
+
+        // Cursorposition aktualisieren, wenn der Benutzer die Position ändert
+        function updateCursorPos(event) {
+            cursorPos = event.target.selectionStart;
+        }
+
+        // Mapping für griechische Buchstaben zu LaTeX-Befehlen
+        const greekToLatex = {
+            // Kleinbuchstaben
+            "α": "\\alpha", "β": "\\beta", "γ": "\\gamma", "δ": "\\delta", "ε": "\\epsilon",
+            "ζ": "\\zeta", "η": "\\eta", "θ": "\\theta", "ι": "\\iota", "κ": "\\kappa",
+            "λ": "\\lambda", "μ": "\\mu", "ν": "\\nu", "ξ": "\\xi", "ο": "\\omicron",
+            "π": "\\pi", "ρ": "\\rho", "σ": "\\sigma", "τ": "\\tau", "υ": "\\upsilon",
+            "φ": "\\phi", "χ": "\\chi", "ψ": "\\psi", "ω": "\\omega",
+            "ϵ": "\\varepsilon", "ϑ": "\\vartheta", "ϖ": "\\varpi", "ϱ": "\\varrho",
+            "ς": "\\varsigma", "ϕ": "\\varphi",
+
+            // Großbuchstaben
+            "Α": "\\Alpha", "Β": "\\Beta", "Γ": "\\Gamma", "Δ": "\\Delta", "Ε": "\\Epsilon",
+            "Ζ": "\\Zeta", "Η": "\\Eta", "Θ": "\\Theta", "Ι": "\\Iota", "Κ": "\\Kappa",
+            "Λ": "\\Lambda", "Μ": "\\Mu", "Ν": "\\Nu", "Ξ": "\\Xi", "Ο": "\\Omicron",
+            "Π": "\\Pi", "Ρ": "\\Rho", "Σ": "\\Sigma", "Τ": "\\Tau", "Υ": "\\Upsilon",
+            "Φ": "\\Phi", "Χ": "\\Chi", "Ψ": "\\Psi", "Ω": "\\Omega"
+        };
+
+
+        // Funktion zum Einfügen des LaTeX-Symbols an der gespeicherten Cursorposition
+        function insertSymbol(symbol) {
+            if (activeElement) {
+                // Prüfe, ob das Symbol ein griechischer Buchstabe ist und ersetze es ggf. durch den LaTeX-Befehl
+                const latexSymbol = greekToLatex[symbol] || symbol;
+                const currentValue = activeElement.value;
+                activeElement.value = currentValue.slice(0, cursorPos) + latexSymbol + currentValue.slice(cursorPos);
+                // Cursorposition nach dem Einfügen aktualisieren
+                cursorPos += latexSymbol.length;
+                activeElement.setSelectionRange(cursorPos, cursorPos);
+                activeElement.focus();
+            } else {
+                alert("Bitte zuerst ein Eingabefeld auswählen.");
+            }
+        }
+
+        // Funktion, um den LaTeX Code zu generieren
+        function generateLatexCode() {
+            const mainSymbol = document.getElementById("main-symbol").value;
+            const supBefore = document.getElementById("sup-before").value;
+            const subBefore = document.getElementById("sub-before").value;
+            const supAfter = document.getElementById("sup-after").value;
+            const subAfter = document.getElementById("sub-after").value;
+            const selectedSymbol = document.getElementById("symbol-select").value;
+
+            let latexCode = "$";
+            if (subBefore || supBefore) {
+                latexCode += "_{" + subBefore + "}^{" + supBefore + "}";
+            }
+            latexCode += selectedSymbol ? selectedSymbol + "{" + mainSymbol + "}" : mainSymbol;
+            if (subAfter || supAfter) {
+                latexCode += "_{" + subAfter + "}^{" + supAfter + "}";
+            }
+            latexCode += "$";
+
+            document.getElementById("output").innerText = "LaTeX Code: " + latexCode;
+        }
+    </script>
+
+</body>
+</html>
