@@ -79,7 +79,7 @@ class CSVPlotterApp:
 
     def load_config(self):
         """Lade Konfiguration aus config.json"""
-        with open("config.json", "r") as f:
+        with open("resources/config.json", "r") as f:
             config = json.load(f)
         return config
 
