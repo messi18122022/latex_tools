@@ -286,16 +286,8 @@ class CSVPlotterApp:
     def plot_data(self):
         # Neues Fenster für Plot und Einstellungen erstellen
         plot_window = tk.Toplevel(self.root)
-        plot_window.title("Plot und Einstellungen")
-        plot_window.geometry("1000x600")
-
-        # PanedWindow erstellen, damit die Linie zwischen Einstellungen und Plot verschiebbar ist
-        paned_window = tk.PanedWindow(plot_window, orient=tk.HORIZONTAL)
-        paned_window.pack(fill=tk.BOTH, expand=True)
-
-        # Frame für Plot-Einstellungen auf der linken Seite
-        settings_frame = tk.Frame(paned_window, padx=10, pady=10)
-        paned_window.add(settings_frame, minsize=200)  # Mindestgröße für die Einstellungen
+        plot_window.title("Plot")
+        plot_window.geometry("1000x600")  # Fenstergröße für Plot und Einstellungen
 
         # Frame für Plot-Einstellungen auf der linken Seite
         settings_frame = tk.Frame(plot_window, padx=10, pady=10)
@@ -446,12 +438,9 @@ class CSVPlotterApp:
         update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
         update_button.pack(pady=10)
 
-        # Frame für den Plot rechts im PanedWindow
-        plot_frame = tk.Frame(paned_window)
-        paned_window.add(plot_frame)
-
+        # Erstelle das Plot-Fenster
         fig, ax = plt.subplots(figsize=(6, 4))
-        canvas = FigureCanvasTkAgg(fig, master=plot_frame)
+        canvas = FigureCanvasTkAgg(fig, master=plot_window)
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         def update_plot():
