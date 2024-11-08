@@ -308,6 +308,8 @@ class CSVPlotterApp:
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
             
             def parse_ticks(ticks_input):
+                if not ticks_input.strip():
+                    return None  # Keine Eingabe, automatische Ticks verwenden
                 try:
                     # Prüfen auf 'start:step:end' Format
                     if ":" in ticks_input:
@@ -774,7 +776,6 @@ class CSVPlotterApp:
         self.export_json_for_plot(file_path)
         tk.messagebox.showinfo("Erfolg", f"Der Plot und JSON wurden erfolgreich als {file_extension.upper()} und JSON gespeichert.")
 
-    # Wrapper für PNG- und PDF-Export
     def export_png(self):
         self.export_plot("png", "png")
 
