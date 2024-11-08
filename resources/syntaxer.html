@@ -90,7 +90,7 @@
         button:hover {
             background-color: #4a7ed0;
         }
-        #output {
+        #output, #preview {
             margin-top: 20px;
             font-family: monospace;
             background-color: #444;
@@ -99,6 +99,8 @@
             color: #f0f0f0;
         }
     </style>
+    <!-- MathJax Script -->
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -118,19 +120,19 @@
         <label for="symbol-select">Sonderzeichen:</label>
         <select id="symbol-select">
             <option value="">Kein Symbol</option>
-            <option value="\tilde">~ (Tilde)</option>
-            <option value="\bar">¯ (Gerader Strich)</option>
-            <option value="\dot">• (Punkt)</option>
-            <option value="\hat">^ (Dach)</option>
-            <option value="\vec">→ (Vektor-Pfeil)</option>
-            <option value="\ddot">¨ (Doppelpunkt)</option>
-            <option value="\breve">˘ (Breve)</option>
-            <option value="\check">ˇ (Haken)</option>
-            <option value="\acute">´ (Akut)</option>
-            <option value="\grave">` (Gravis)</option>
-            <option value="\mathring">° (Ring)</option>
-            <option value="\overline">¯ (Überstrich)</option>
-            <option value="\underline">_ (Unterstrich)</option>
+            <option value="\\tilde">~ (Tilde)</option>
+            <option value="\\bar">¯ (Gerader Strich)</option>
+            <option value="\\dot">• (Punkt)</option>
+            <option value="\\hat">^ (Dach)</option>
+            <option value="\\vec">→ (Vektor-Pfeil)</option>
+            <option value="\\ddot">¨ (Doppelpunkt)</option>
+            <option value="\\breve">˘ (Breve)</option>
+            <option value="\\check">ˇ (Haken)</option>
+            <option value="\\acute">´ (Akut)</option>
+            <option value="\\grave">` (Gravis)</option>
+            <option value="\\mathring">° (Ring)</option>
+            <option value="\\overline">¯ (Überstrich)</option>
+            <option value="\\underline">_ (Unterstrich)</option>
         </select>
     </div>
 
@@ -186,26 +188,25 @@
 
     <!-- Ausgabe des LaTeX Codes -->
     <div id="output" class="output-field"></div>
+    <!-- Vorschau des LaTeX Codes -->
+    <div id="preview" class="output-field"></div>
+
     <script>
         // Globale Variablen für das aktive Feld und die Cursorposition
         let activeElement = null;
         let cursorPos = 0;
 
-        // Funktion zum Speichern des aktiven Eingabefeldes und der Cursorposition
         function setActiveField(element) {
             activeElement = element;
             cursorPos = element.selectionStart;
             element.addEventListener('keyup', updateCursorPos);
         }
 
-        // Cursorposition aktualisieren, wenn der Benutzer die Position ändert
         function updateCursorPos(event) {
             cursorPos = event.target.selectionStart;
         }
 
-        // Mapping für griechische Buchstaben zu LaTeX-Befehlen
         const greekToLatex = {
-            // Kleinbuchstaben
             "α": "\\alpha", "β": "\\beta", "γ": "\\gamma", "δ": "\\delta", "ε": "\\epsilon",
             "ζ": "\\zeta", "η": "\\eta", "θ": "\\theta", "ι": "\\iota", "κ": "\\kappa",
             "λ": "\\lambda", "μ": "\\mu", "ν": "\\nu", "ξ": "\\xi", 
@@ -213,22 +214,15 @@
             "φ": "\\varphi", "χ": "\\chi", "ψ": "\\psi", "ω": "\\omega",
             "ϵ": "\\varepsilon", "ϑ": "\\vartheta", "ϖ": "\\varpi", "ϱ": "\\varrho",
             "ς": "\\varsigma", "ϕ": "\\phi",
-
-            // Großbuchstaben
             "Γ": "\\Gamma", "Δ": "\\Delta", "Θ": "\\Theta", "Λ": "\\Lambda", "Ξ": "\\Xi",
-            "Π": "\\Pi", "Σ": "\\Sigma", "Υ": "\\Upsilon",
-            "Φ": "\\Phi", "Ψ": "\\Psi", "Ω": "\\Omega"
+            "Π": "\\Pi", "Σ": "\\Sigma", "Υ": "\\Upsilon", "Φ": "\\Phi", "Ψ": "\\Psi", "Ω": "\\Omega"
         };
 
-
-        // Funktion zum Einfügen des LaTeX-Symbols an der gespeicherten Cursorposition
         function insertSymbol(symbol) {
             if (activeElement) {
-                // Prüfe, ob das Symbol ein griechischer Buchstabe ist und ersetze es ggf. durch den LaTeX-Befehl
                 const latexSymbol = greekToLatex[symbol] || symbol;
                 const currentValue = activeElement.value;
                 activeElement.value = currentValue.slice(0, cursorPos) + latexSymbol + currentValue.slice(cursorPos);
-                // Cursorposition nach dem Einfügen aktualisieren
                 cursorPos += latexSymbol.length;
                 activeElement.setSelectionRange(cursorPos, cursorPos);
                 activeElement.focus();
@@ -237,7 +231,6 @@
             }
         }
 
-        // Funktion, um den LaTeX Code zu generieren und direkt in die Zwischenablage zu kopieren
         function generateLatexCode() {
             const mainSymbol = document.getElementById("main-symbol").value;
             const supBefore = document.getElementById("sup-before").value;
@@ -256,14 +249,13 @@
             }
             latexCode += "$";
 
-            // LaTeX-Code in die Zwischenablage kopieren
-            navigator.clipboard.writeText(latexCode).then(() => {
-                alert("LaTeX-Code wurde in die Zwischenablage kopiert.");
-            }).catch(err => {
-                console.error('Fehler beim Kopieren in die Zwischenablage: ', err);
-            });
-        }
+            // Anzeige des LaTeX-Codes im Rohformat
+            document.getElementById("output").innerText = latexCode;
 
+            // MathJax-Rendering der Vorschau
+            document.getElementById("preview").innerHTML = latexCode;
+            MathJax.typesetPromise([document.getElementById("preview")]);
+        }
     </script>
 
 </body>
