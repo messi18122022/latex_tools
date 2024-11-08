@@ -221,23 +221,28 @@ class CSVPlotterApp:
         row_frame = tk.Frame(self.table_frame)
         row_frame.pack(pady=5, fill="x")
 
+        # File selection dropdowns
         file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
-
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
         file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
-
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
+        # Bind update_columns to file selection change
+        file_dropdown_x.bind("<<ComboboxSelected>>", lambda e: self.update_columns(file_dropdown_x, 'x'))
+        file_dropdown_y.bind("<<ComboboxSelected>>", lambda e: self.update_columns(file_dropdown_y, 'y'))
+
+        # Visibility dropdown
         visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
 
+        # Legend name entry
         name_entry = tk.Entry(row_frame, width=20)
         name_entry.insert(0, "Legend Name")
         name_entry.grid(row=0, column=5, padx=5)
 
-        # Combobox for color selection
+        # Color selection dropdown
         color_dropdown = ttk.Combobox(row_frame, state="readonly", width=7)
         color_dropdown["values"] = ["blue", "red", "teal", "orange", "darkgray", "cyan", "magenta", "brown", "purple"]
         color_dropdown.set("blue")  # Default color is blue
