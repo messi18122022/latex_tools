@@ -83,7 +83,7 @@ class PlotGOAT:
         self.plot_settings = self.load_config()["plot_settings"]
 
     def open_html_file(self):
-        html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")  # Ersetzen Sie "dateiname.html" durch den Dateinamen
+        html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")
         webbrowser.open_new_tab(f"file://{html_file_path}")
 
     def load_config(self):
