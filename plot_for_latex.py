@@ -14,7 +14,7 @@ import os
 plt.rcParams['text.usetex'] = True  # Aktiviert LaTeX für Textrenderung
 plt.rcParams['font.family'] = 'serif'
 plt.rcParams['font.serif'] = ['Computer Modern']
-plt.rcParams['text.latex.preamble'] = r'\\usepackage{siunitx}'
+plt.rcParams['text.latex.preamble'] = r'\usepackage{siunitx}'
 
 
 class CSVPlotterApp:
