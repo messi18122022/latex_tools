@@ -57,7 +57,7 @@ class CSVPlotterApp:
         self.export_button = tk.Button(self.file_frame, text=".tex exportieren", command=self.export_tex, width=15)
         self.export_button.grid(row=6, column=1, pady=5)
 
-        # Button für PNG-Export
+        # Buttons in der Benutzeroberfläche für PNG und PDF Export
         self.export_png_button = tk.Button(self.file_frame, text=".png exportieren", command=self.export_png, width=15)
         self.export_png_button.grid(row=5, column=1, pady=5)
 
@@ -221,23 +221,28 @@ class CSVPlotterApp:
         row_frame = tk.Frame(self.table_frame)
         row_frame.pack(pady=5, fill="x")
 
+        # File selection dropdowns
         file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
-
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
         file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
-
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
+        # Bind update_columns to file selection change
+        file_dropdown_x.bind("<<ComboboxSelected>>", lambda e: self.update_columns(file_dropdown_x, 'x'))
+        file_dropdown_y.bind("<<ComboboxSelected>>", lambda e: self.update_columns(file_dropdown_y, 'y'))
+
+        # Visibility dropdown
         visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
 
+        # Legend name entry
         name_entry = tk.Entry(row_frame, width=20)
         name_entry.insert(0, "Legend Name")
         name_entry.grid(row=0, column=5, padx=5)
 
-        # Combobox for color selection
+        # Color selection dropdown
         color_dropdown = ttk.Combobox(row_frame, state="readonly", width=7)
         color_dropdown["values"] = ["blue", "red", "teal", "orange", "darkgray", "cyan", "magenta", "brown", "purple"]
         color_dropdown.set("blue")  # Default color is blue
@@ -308,6 +313,8 @@ class CSVPlotterApp:
             self.plot_settings['corr_pos'] = corr_pos_dropdown.get()  # Position für Korrelationskoeffizienten
             
             def parse_ticks(ticks_input):
+                if not ticks_input.strip():
+                    return None  # Keine Eingabe, automatische Ticks verwenden
                 try:
                     # Prüfen auf 'start:step:end' Format
                     if ":" in ticks_input:
@@ -698,43 +705,35 @@ class CSVPlotterApp:
         self.export_json_for_plot(file_path)
         tk.messagebox.showinfo("Erfolg", "Die Datei und JSON wurden erfolgreich als TeX und JSON exportiert.")
 
-    def export_png(self):
-        # Öffne einen Speicherdialog, um den Dateinamen und Speicherort zu wählen
-        file_path = filedialog.asksaveasfilename(defaultextension=".png", filetypes=[("PNG files", "*.png")], initialfile="Plot.png")
+    def export_plot(self, file_extension, file_format):
+        # Öffne einen Speicherdialog basierend auf dem Dateiformat
+        file_path = filedialog.asksaveasfilename(defaultextension=f".{file_extension}", filetypes=[(f"{file_extension.upper()} files", f"*.{file_extension}")], initialfile=f"Plot.{file_extension}")
         if not file_path:
             return  # Falls der Benutzer abbricht
         
-        # Hole die Plot-Einstellungen für die Größe in cm und konvertiere in Zoll
+        # Plot-Einstellungen für die Größe in cm und Konvertierung in Zoll
         width_inch = self.plot_settings['width_cm'] / 2.54
         height_inch = self.plot_settings['height_cm'] / 2.54
-        
-        # Erstelle den Plot und speichere ihn als PNG
-        fig, ax = plt.subplots(figsize=(width_inch, height_inch))
-        
-        for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
-            selected_file_x = file_dropdown_x.get()
-            selected_file_y = file_dropdown_y.get()
-            x_column = x_dropdown.get()
-            y_column = y_dropdown.get()
-            legend_name = name_entry.get()
-            visibility = visibility_dropdown.get()
-            color = color_dropdown.get()
-            line_width = float(line_width_entry.get())
-            line_style = line_style_dropdown.get()
-            marker = marker_dropdown.get()
 
+        # Erstelle den Plot
+        fig, ax = plt.subplots(figsize=(width_inch, height_inch))
+
+        for row in self.rows:
+            # Extrahiere und konvertiere die Parameter aus den Widgets
+            selected_file_x, selected_file_y = row[0].get(), row[1].get()
+            x_column, y_column = row[2].get(), row[3].get()
+            legend_name, visibility = row[5].get(), row[4].get()
+            color, line_width = row[6].get(), float(row[7].get())
+            line_style, marker = row[8].get(), row[9].get()
+
+            # Konvertiere Zeichenstile und Marker
             line_style_map = {"durchgezogen": '-', "gestrichelt": '--', "keine": ''}
             marker_map = {"keine": '', "Kreis": 'o', "+": '+', "Dreieck": '^', "Quadrat": 's'}
 
-            linestyle = line_style_map.get(line_style, '-')
-            mark = marker_map.get(marker, '')
+            linestyle, mark = line_style_map.get(line_style, '-'), marker_map.get(marker, '')
 
             if selected_file_x and selected_file_y and x_column and y_column and visibility == "sichtbar":
-                df_x = self.dataframes[selected_file_x]
-                df_y = self.dataframes[selected_file_y]
-                x_data = df_x[x_column].to_numpy()
-                y_data = df_y[y_column].to_numpy()
-
+                x_data, y_data = self.dataframes[selected_file_x][x_column].to_numpy(), self.dataframes[selected_file_y][y_column].to_numpy()
                 ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark, markersize=2)
                 
                 # Lineare Regression und Korrelationskoeffizient, falls aktiviert
@@ -745,174 +744,48 @@ class CSVPlotterApp:
 
                     # Korrelationskoeffizient anzeigen in einer Box über dem Plot
                     r_text = f"r = {r_value:.4f}"
-                    corr_pos_map = {
-                        "oben rechts": (0.8, 0.95),
-                        "oben links": (0.1, 0.95),
-                        "unten rechts": (0.8, 0.1),
-                        "unten links": (0.1, 0.1)
-                    }
-                    pos_x, pos_y = corr_pos_map.get(self.plot_settings.get('corr_pos', 'oben rechts'), (0.8, 0.95))
+                    pos_x, pos_y = {
+                        "oben rechts": (0.8, 0.95), "oben links": (0.1, 0.95),
+                        "unten rechts": (0.8, 0.1), "unten links": (0.1, 0.1)
+                    }.get(self.plot_settings.get('corr_pos', 'oben rechts'), (0.8, 0.95))
 
-                    # Füge die Box hinzu
-                    box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
-                    ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
-            
-        # Setze die Achsenbeschriftungen und -limits
+                    ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top',
+                            bbox=dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white"))
+
+        # Setze Achsenbeschriftungen und andere Einstellungen
         ax.set_xlabel(self.plot_settings['x_label'])
         ax.set_ylabel(self.plot_settings['y_label'])
+        if self.plot_settings['x_ticks'] is not None: ax.set_xticks(self.plot_settings['x_ticks'])
+        if self.plot_settings['y_ticks'] is not None: ax.set_yticks(self.plot_settings['y_ticks'])
+        if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None: ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
+        if self.plot_settings['y_min'] is not None and self.plot_settings['y_max'] is not None: ax.set_ylim([self.plot_settings['y_min'], self.plot_settings['y_max']])
+        if self.plot_settings['invert_x_axis']: ax.invert_xaxis()
+        if self.plot_settings['log_x_axis']: ax.set_xscale('log')
+        if self.plot_settings['log_y_axis']: ax.set_yscale('log')
+        if self.plot_settings['grid']: ax.grid(True)
 
-        # x_ticks und y_ticks setzen
-        if self.plot_settings['x_ticks'] is not None:
-            ax.set_xticks(self.plot_settings['x_ticks'])
-        
-        if self.plot_settings['y_ticks'] is not None:
-            ax.set_yticks(self.plot_settings['y_ticks'])
-        
-        if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
-            ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
-
-        if self.plot_settings['y_min'] is not None and self.plot_settings['y_max'] is not None:
-            ax.set_ylim([self.plot_settings['y_min'], self.plot_settings['y_max']])
-
-        if self.plot_settings['invert_x_axis']:
-            ax.invert_xaxis()
-
-        if self.plot_settings['log_x_axis']:
-            ax.set_xscale('log')
-        if self.plot_settings['log_y_axis']:
-            ax.set_yscale('log')
-
-        if self.plot_settings['grid']:
-            ax.grid(True)
-
-        if len([row for row in self.rows if row[4].get() == "sichtbar"]) > 1:
-            legend_position_map = {
-                "oben rechts": "upper right",
-                "oben links": "upper left",
-                "unten rechts": "lower right",
-                "unten links": "lower left"
-            }
-            legend_position = legend_position_map.get(self.plot_settings['legend_position'], 'upper right')
+        # Zeige die Legende, wenn mehr als eine sichtbare Linie vorhanden ist
+        if sum(1 for row in self.rows if row[4].get() == "sichtbar") > 1:
+            legend_position = {
+                "oben rechts": "upper right", "oben links": "upper left",
+                "unten rechts": "lower right", "unten links": "lower left"
+            }.get(self.plot_settings['legend_position'], 'upper right')
             ax.legend(loc=legend_position)
-        
-        # Speichere den Plot als PNG
-        fig.savefig(file_path, dpi=300, bbox_inches='tight', transparent=True)  
-        plt.close(fig)  # Schließe den Plot, um Speicher freizugeben
 
-        tk.messagebox.showinfo("Erfolg", "Der Plot wurde erfolgreich als PNG gespeichert.")
+        # Speichere den Plot
+        fig.savefig(file_path, dpi=300, bbox_inches='tight', transparent=True, format=file_format)
+        plt.close(fig)  # Speicher freigeben
+        tk.messagebox.showinfo("Erfolg", f"Der Plot wurde erfolgreich als {file_extension.upper()} gespeichert.")
 
-        # Call the JSON export after saving the PNG
+        # Exportiere JSON für Plot
         self.export_json_for_plot(file_path)
-        tk.messagebox.showinfo("Erfolg", "Der Plot und JSON wurden erfolgreich als PNG und JSON gespeichert.")
+        tk.messagebox.showinfo("Erfolg", f"Der Plot und JSON wurden erfolgreich als {file_extension.upper()} und JSON gespeichert.")
+
+    def export_png(self):
+        self.export_plot("png", "png")
 
     def export_pdf(self):
-        # Öffne einen Speicherdialog für den PDF-Dateinamen
-        file_path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=[("PDF files", "*.pdf")], initialfile="Plot.pdf")
-        if not file_path:
-            return  # Falls der Benutzer abbricht
-        
-        # Hole die Plot-Einstellungen für die Größe in cm und konvertiere in Zoll
-        width_inch = self.plot_settings['width_cm'] / 2.54
-        height_inch = self.plot_settings['height_cm'] / 2.54
-        
-        # Erstelle den Plot und speichere ihn als PDF mit transparentem Hintergrund
-        fig, ax = plt.subplots(figsize=(width_inch, height_inch))
-        
-        for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
-            selected_file_x = file_dropdown_x.get()
-            selected_file_y = file_dropdown_y.get()
-            x_column = x_dropdown.get()
-            y_column = y_dropdown.get()
-            legend_name = name_entry.get()
-            visibility = visibility_dropdown.get()
-            color = color_dropdown.get()
-            line_width = float(line_width_entry.get())
-            line_style = line_style_dropdown.get()
-            marker = marker_dropdown.get()
-
-            line_style_map = {"durchgezogen": '-', "gestrichelt": '--', "keine": ''}
-            marker_map = {"keine": '', "Kreis": 'o', "+": '+', "Dreieck": '^', "Quadrat": 's'}
-
-            linestyle = line_style_map.get(line_style, '-')
-            mark = marker_map.get(marker, '')
-
-            if selected_file_x and selected_file_y and x_column and y_column and visibility == "sichtbar":
-                df_x = self.dataframes[selected_file_x]
-                df_y = self.dataframes[selected_file_y]
-                x_data = df_x[x_column].to_numpy()
-                y_data = df_y[y_column].to_numpy()
-
-                ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark, markersize=2)
-                
-                # Lineare Regression und Korrelationskoeffizient, falls aktiviert
-                if self.plot_settings.get('linreg', False):
-                    slope, intercept, r_value, _, _ = stats.linregress(x_data, y_data)
-                    reg_line = slope * x_data + intercept
-                    ax.plot(x_data, reg_line, color="black", linewidth=0.5, label=f"LinReg ({legend_name})")
-
-                    # Korrelationskoeffizient anzeigen in einer Box über dem Plot
-                    r_text = f"r = {r_value:.4f}"
-                    corr_pos_map = {
-                        "oben rechts": (0.8, 0.95),
-                        "oben links": (0.1, 0.95),
-                        "unten rechts": (0.8, 0.1),
-                        "unten links": (0.1, 0.1)
-                    }
-                    pos_x, pos_y = corr_pos_map.get(self.plot_settings.get('corr_pos', 'oben rechts'), (0.8, 0.95))
-
-                    # Füge die Box hinzu
-                    box_properties = dict(boxstyle="round,pad=0.3", edgecolor="black", facecolor="white")
-                    ax.text(pos_x, pos_y, r_text, transform=ax.transAxes, fontsize=10, verticalalignment='top', bbox=box_properties)
-            
-        # Setze die Achsenbeschriftungen und -limits
-        ax.set_xlabel(self.plot_settings['x_label'])
-        ax.set_ylabel(self.plot_settings['y_label'])
-        
-        if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None:
-            ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
-
-        if self.plot_settings['y_min'] is not None and self.plot_settings['y_max'] is not None:
-            ax.set_ylim([self.plot_settings['y_min'], self.plot_settings['y_max']])
-
-        if self.plot_settings['invert_x_axis']:
-            ax.invert_xaxis()
-
-        # x_ticks und y_ticks setzen
-        if self.plot_settings['x_ticks'] is not None:
-            ax.set_xticks(self.plot_settings['x_ticks'])
-        
-        if self.plot_settings['y_ticks'] is not None:
-            ax.set_yticks(self.plot_settings['y_ticks'])
-
-        if self.plot_settings['log_x_axis']:
-            ax.set_xscale('log')
-        if self.plot_settings['log_y_axis']:
-            ax.set_yscale('log')
-
-        if self.plot_settings['grid']:
-            ax.grid(True)
-
-        # Legende nur anzeigen, wenn mehr als eine sichtbare Linie existiert
-        visible_lines = sum(1 for row in self.rows if row[4].get() == "sichtbar")
-        if visible_lines > 1:
-            legend_position_map = {
-                "oben rechts": "upper right",
-                "oben links": "upper left",
-                "unten rechts": "lower right",
-                "unten links": "lower left"
-            }
-            legend_position = legend_position_map.get(self.plot_settings['legend_position'], 'upper right')
-            ax.legend(loc=legend_position)
-        
-        # Speichere den Plot als PDF mit transparentem Hintergrund
-        fig.savefig(file_path, dpi=300, bbox_inches='tight', transparent=True, format='pdf')
-        plt.close(fig)  # Schließe den Plot, um Speicher freizugeben
-
-        tk.messagebox.showinfo("Erfolg", "Der Plot wurde erfolgreich als PDF mit transparentem Hintergrund gespeichert.")
-
-        # Call the JSON export after saving the PDF
-        self.export_json_for_plot(file_path)
-        tk.messagebox.showinfo("Erfolg", "Der Plot und JSON wurden erfolgreich als PDF und JSON gespeichert.")
+        self.export_plot("pdf", "pdf")
 
     def plot_preview(self):
         # Erstelle ein neues Fenster für den interaktiven Plot
