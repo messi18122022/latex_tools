@@ -287,11 +287,11 @@ class CSVPlotterApp:
         # Neues Fenster für Plot und Einstellungen erstellen
         plot_window = tk.Toplevel(self.root)
         plot_window.title("Plot")
-        plot_window.geometry("1000x600")  # Fenstergröße für Plot und Einstellungen
+        plot_window.geometry("1200x600")  # Fenstergröße vergrößert, um mehr Platz für die Eingabefelder zu schaffen
 
-        # Frame für Plot-Einstellungen auf der linken Seite
-        settings_frame = tk.Frame(plot_window, padx=10, pady=10)
-        settings_frame.pack(side=tk.LEFT, fill=tk.Y)
+        # Breiteres Frame für Plot-Einstellungen auf der linken Seite
+        settings_frame = tk.Frame(plot_window, padx=20, pady=10, width=400)  # Breiteres Einstellungs-Frame
+        settings_frame.pack(side=tk.LEFT, fill=tk.Y, expand=False)  # `expand=False` für festen Platz für Eingaben
 
         # Funktion zur Anwendung und Aktualisierung der Einstellungen
         def apply_settings():
@@ -348,55 +348,32 @@ class CSVPlotterApp:
             except Exception as e:
                 self.show_error("Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
+        # Anpassungen für breitere Eingabefelder
+        def create_labeled_entry(label_text, initial_value):
+            tk.Label(settings_frame, text=label_text).pack(anchor="w")
+            entry = tk.Entry(settings_frame, width=30)  # Vergrößere die Breite auf 30
+            entry.insert(0, initial_value)
+            entry.pack(anchor="w")
+            return entry
+
         # Einstellungsfelder für Plot-Einstellungen erstellen
-        tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
-        x_label_entry = tk.Entry(settings_frame)
-        x_label_entry.insert(0, self.plot_settings['x_label'])
-        x_label_entry.pack(anchor="w")
+        x_label_entry = create_labeled_entry("X-axis Label:", self.plot_settings['x_label'])
+        y_label_entry = create_labeled_entry("Y-axis Label:", self.plot_settings['y_label'])
+        x_min_entry = create_labeled_entry("X Min:", str(self.plot_settings['x_min']) if self.plot_settings['x_min'] is not None else "")
+        x_max_entry = create_labeled_entry("X Max:", str(self.plot_settings['x_max']) if self.plot_settings['x_max'] is not None else "")
+        y_min_entry = create_labeled_entry("Y Min:", str(self.plot_settings['y_min']) if self.plot_settings['y_min'] is not None else "")
+        y_max_entry = create_labeled_entry("Y Max:", str(self.plot_settings['y_max']) if self.plot_settings['y_max'] is not None else "")
+        width_entry = create_labeled_entry("Width (cm):", str(self.plot_settings['width_cm']))
+        height_entry = create_labeled_entry("Height (cm):", str(self.plot_settings['height_cm']))
 
-        tk.Label(settings_frame, text="Y-axis Label:").pack(anchor="w")
-        y_label_entry = tk.Entry(settings_frame)
-        y_label_entry.insert(0, self.plot_settings['y_label'])
-        y_label_entry.pack(anchor="w")
-
-        # Min/Max Eingaben für Achsen und weitere Einstellungen
-        tk.Label(settings_frame, text="X Min:").pack(anchor="w")
-        x_min_entry = tk.Entry(settings_frame)
-        x_min_entry.insert(0, str(self.plot_settings['x_min']) if self.plot_settings['x_min'] is not None else "")
-        x_min_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="X Max:").pack(anchor="w")
-        x_max_entry = tk.Entry(settings_frame)
-        x_max_entry.insert(0, str(self.plot_settings['x_max']) if self.plot_settings['x_max'] is not None else "")
-        x_max_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Min:").pack(anchor="w")
-        y_min_entry = tk.Entry(settings_frame)
-        y_min_entry.insert(0, str(self.plot_settings['y_min']) if self.plot_settings['y_min'] is not None else "")
-        y_min_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Max:").pack(anchor="w")
-        y_max_entry = tk.Entry(settings_frame)
-        y_max_entry.insert(0, str(self.plot_settings['y_max']) if self.plot_settings['y_max'] is not None else "")
-        y_max_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Width (cm):").pack(anchor="w")
-        width_entry = tk.Entry(settings_frame)
-        width_entry.insert(0, str(self.plot_settings['width_cm']))
-        width_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Height (cm):").pack(anchor="w")
-        height_entry = tk.Entry(settings_frame)
-        height_entry.insert(0, str(self.plot_settings['height_cm']))
-        height_entry.pack(anchor="w")
-
-        # Plot-Einstellungen für Legendenposition
+        # Anpassen der Combobox und weiteren Eingaben
         tk.Label(settings_frame, text="Legend Position:").pack(anchor="w")
-        legend_position_dropdown = ttk.Combobox(settings_frame, state="readonly")
+        legend_position_dropdown = ttk.Combobox(settings_frame, state="readonly", width=28)  # Breitere Combobox
         legend_position_dropdown["values"] = ["oben rechts", "oben links", "unten rechts", "unten links"]
         legend_position_dropdown.set(self.plot_settings['legend_position'])
         legend_position_dropdown.pack(anchor="w")
 
+        # Anpassen der Checkbuttons für weitere Optionen
         invert_x_axis_var = tk.BooleanVar(value=self.plot_settings['invert_x_axis'])
         invert_x_axis_checkbox = tk.Checkbutton(settings_frame, text="Invert X-axis", variable=invert_x_axis_var)
         invert_x_axis_checkbox.pack(anchor="w")
@@ -414,34 +391,14 @@ class CSVPlotterApp:
         grid_checkbox = tk.Checkbutton(settings_frame, text="Grid anzeigen", variable=grid_var)
         grid_checkbox.pack(anchor="w")
 
-        linreg_var = tk.BooleanVar(value=self.plot_settings.get('linreg', False))
-        linreg_checkbox = tk.Checkbutton(settings_frame, text="LinReg", variable=linreg_var)
-        linreg_checkbox.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Position Korrelationskoeffizient:").pack(anchor="w")
-        corr_pos_dropdown = ttk.Combobox(settings_frame, state="readonly")
-        corr_pos_dropdown["values"] = ["oben rechts", "oben links", "unten rechts", "unten links"]
-        corr_pos_dropdown.set(self.plot_settings.get('corr_pos', "oben rechts"))
-        corr_pos_dropdown.pack(anchor="w")
-
-        tk.Label(settings_frame, text="X Ticks (comma-separated):").pack(anchor="w")
-        x_ticks_entry = tk.Entry(settings_frame)
-        x_ticks_entry.insert(0, ','.join(map(str, self.plot_settings['x_ticks'])) if self.plot_settings['x_ticks'] else "")
-        x_ticks_entry.pack(anchor="w")
-
-        tk.Label(settings_frame, text="Y Ticks (comma-separated):").pack(anchor="w")
-        y_ticks_entry = tk.Entry(settings_frame)
-        y_ticks_entry.insert(0, ','.join(map(str, self.plot_settings['y_ticks'])) if self.plot_settings['y_ticks'] else "")
-        y_ticks_entry.pack(anchor="w")
-
-        # "Plot aktualisieren" Button
+        # Update Button
         update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
         update_button.pack(pady=10)
 
-        # Erstelle das Plot-Fenster
-        fig, ax = plt.subplots(figsize=(6, 4))
+        # Erstelle das Plot-Fenster mit reduziertem Platz
+        fig, ax = plt.subplots(figsize=(4, 3))  # Kleinere Plot-Größe, um mehr Platz für Eingaben zu schaffen
         canvas = FigureCanvasTkAgg(fig, master=plot_window)
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+        canvas.get_tk_widget().pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         def update_plot():
             ax.clear()
