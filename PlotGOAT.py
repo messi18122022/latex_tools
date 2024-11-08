@@ -9,6 +9,7 @@ import numpy as np
 from scipy import stats
 import json
 import os
+import webbrowser
 
 # Globale Einstellungen für LaTeX und Computer Modern
 plt.rcParams['text.usetex'] = True  # Aktiviert LaTeX für Textrenderung
@@ -75,7 +76,15 @@ class PlotGOAT:
         self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
         self.load_project_button.grid(row=1, column=3, pady=5)
 
+        # Neuer Button "Formelzeichen generieren"
+        self.formel_button = tk.Button(self.file_frame, text="Formelzeichen generieren", command=self.open_html_file, width=20)
+        self.formel_button.grid(row=0, column=4, pady=5)
+
         self.plot_settings = self.load_config()["plot_settings"]
+
+    def open_html_file(self):
+        html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")  # Ersetzen Sie "dateiname.html" durch den Dateinamen
+        webbrowser.open_new_tab(f"file://{html_file_path}")
 
     def load_config(self):
         """Lade Konfiguration aus config.json"""
