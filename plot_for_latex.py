@@ -21,16 +21,12 @@ class CSVPlotterApp:
         self.root.title("CSV Plotter")
         self.root.geometry("1500x1000")  # Set larger window size for better usability
 
-        # Create a PanedWindow to allow resizing between settings and plot
-        self.main_pane = tk.PanedWindow(root, orient=tk.HORIZONTAL)
-        self.main_pane.pack(fill=tk.BOTH, expand=True)
-
         # Frame for file operations and buttons
-        self.file_frame = tk.Frame(self.main_pane, padx=10, pady=10)
-        self.main_pane.add(self.file_frame, minsize=300)  # Min size to keep the settings visible
+        self.file_frame = tk.Frame(root, padx=10, pady=10)
+        self.file_frame.grid(row=0, column=0, sticky="nw")
 
         self.upload_button = self.create_button(self.file_frame, "Upload CSV", self.load_csv, 0, 0)
-        
+
         self.files_listbox = tk.Listbox(self.file_frame, selectmode=tk.SINGLE, height=7, width=50)
         self.files_listbox.grid(row=1, column=0, pady=5)
 
@@ -39,33 +35,36 @@ class CSVPlotterApp:
         self.remove_row_button = self.create_button(self.file_frame, "Remove Last Row", self.remove_row, 1, 1)
         self.plot_button = self.create_button(self.file_frame, "Plot", self.plot_data, 3, 1)
 
-        self.table_frame = tk.Frame(self.file_frame, padx=10, pady=10)
-        self.table_frame.grid(row=11, column=0, sticky="nw")  # Below Caption and Label Fields
+        self.table_frame = tk.Frame(root, padx=10, pady=10)
+        self.table_frame.grid(row=11, column=0, sticky="nw")  # Nach Caption und Label Felder
 
         # Placeholder for DataFrames and file names
         self.dataframes = {}
         self.rows = []
         self.canvas = None  # Store the canvas to update or clear it
 
-        # Input fields for Caption and Label
+        # Eingabefelder für Caption und Label
         self.caption_label = tk.Label(self.file_frame, text="Caption:")
         self.caption_label.grid(row=3, column=0, pady=5, sticky="w")
         self.caption_entry = self.create_entry(self.file_frame, 50, 4, 0, "Caption")
+
 
         self.label_label = tk.Label(self.file_frame, text="Label:")
         self.label_label.grid(row=5, column=0, pady=5, sticky="w")
         self.label_entry = self.create_entry(self.file_frame, 40, 6, 0, "Label")
 
-        # Buttons for Export and Project management
+        # Button für Tex-Export
         self.export_button = tk.Button(self.file_frame, text=".tex exportieren", command=self.export_tex, width=15)
         self.export_button.grid(row=6, column=1, pady=5)
 
+        # Buttons in der Benutzeroberfläche für PNG und PDF Export
         self.export_png_button = tk.Button(self.file_frame, text=".png exportieren", command=self.export_png, width=15)
         self.export_png_button.grid(row=5, column=1, pady=5)
 
         self.export_pdf_button = tk.Button(self.file_frame, text=".pdf exportieren", command=self.export_pdf, width=15)
         self.export_pdf_button.grid(row=4, column=1, pady=5)
 
+        # Button für Plot-Vorschau
         self.preview_button = tk.Button(self.file_frame, text="Plot-Vorschau", command=self.plot_preview, width=20)
         self.preview_button.grid(row=2, column=1, pady=5)
 
@@ -75,11 +74,6 @@ class CSVPlotterApp:
         self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
         self.load_project_button.grid(row=1, column=3, pady=5)
 
-        # Panel for the plot area
-        self.plot_frame = tk.Frame(self.main_pane)
-        self.main_pane.add(self.plot_frame)  # Add plot area as the second section in the paned window
-
-        # Initialize settings from config.json
         self.plot_settings = self.load_config()["plot_settings"]
 
     def load_config(self):
@@ -292,8 +286,16 @@ class CSVPlotterApp:
     def plot_data(self):
         # Neues Fenster für Plot und Einstellungen erstellen
         plot_window = tk.Toplevel(self.root)
-        plot_window.title("Plot")
-        plot_window.geometry("1000x600")  # Fenstergröße für Plot und Einstellungen
+        plot_window.title("Plot und Einstellungen")
+        plot_window.geometry("1000x600")
+
+        # PanedWindow erstellen, damit die Linie zwischen Einstellungen und Plot verschiebbar ist
+        paned_window = tk.PanedWindow(plot_window, orient=tk.HORIZONTAL)
+        paned_window.pack(fill=tk.BOTH, expand=True)
+
+        # Frame für Plot-Einstellungen auf der linken Seite
+        settings_frame = tk.Frame(paned_window, padx=10, pady=10)
+        paned_window.add(settings_frame, minsize=200)  # Mindestgröße für die Einstellungen
 
         # Frame für Plot-Einstellungen auf der linken Seite
         settings_frame = tk.Frame(plot_window, padx=10, pady=10)
@@ -444,9 +446,12 @@ class CSVPlotterApp:
         update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
         update_button.pack(pady=10)
 
-        # Erstelle das Plot-Fenster
+        # Frame für den Plot rechts im PanedWindow
+        plot_frame = tk.Frame(paned_window)
+        paned_window.add(plot_frame)
+
         fig, ax = plt.subplots(figsize=(6, 4))
-        canvas = FigureCanvasTkAgg(fig, master=plot_window)
+        canvas = FigureCanvasTkAgg(fig, master=plot_frame)
         canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
 
         def update_plot():
