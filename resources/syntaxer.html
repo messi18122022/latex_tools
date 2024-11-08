@@ -100,13 +100,18 @@
         }
     </style>
     <!-- MathJax Script -->
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        svg: { fontCache: 'global' }
+      };
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
     <h1>LaTeX Formelgenerator</h1>
 
-    <!-- Eingabefelder für das Hauptsymbol und seine Ecken -->
     <div class="symbol-field">
         <input type="text" id="sup-before" placeholder="Hochgestellt Links" onfocus="setActiveField(this)">
         <input type="text" id="sub-before" placeholder="Tiefgestellt Links" onfocus="setActiveField(this)">
@@ -115,24 +120,23 @@
         <input type="text" id="sub-after" placeholder="Tiefgestellt Rechts" onfocus="setActiveField(this)">
     </div>
 
-    <!-- Dropdown für spezielle Symbole -->
     <div class="dropdown-symbol">
         <label for="symbol-select">Sonderzeichen:</label>
         <select id="symbol-select">
             <option value="">Kein Symbol</option>
-            <option value="\\tilde">~ (Tilde)</option>
-            <option value="\\bar">¯ (Gerader Strich)</option>
-            <option value="\\dot">• (Punkt)</option>
-            <option value="\\hat">^ (Dach)</option>
-            <option value="\\vec">→ (Vektor-Pfeil)</option>
-            <option value="\\ddot">¨ (Doppelpunkt)</option>
-            <option value="\\breve">˘ (Breve)</option>
-            <option value="\\check">ˇ (Haken)</option>
-            <option value="\\acute">´ (Akut)</option>
-            <option value="\\grave">` (Gravis)</option>
-            <option value="\\mathring">° (Ring)</option>
-            <option value="\\overline">¯ (Überstrich)</option>
-            <option value="\\underline">_ (Unterstrich)</option>
+            <option value="\tilde">~ (Tilde)</option>
+            <option value="\bar">¯ (Gerader Strich)</option>
+            <option value="\dot">• (Punkt)</option>
+            <option value="\hat">^ (Dach)</option>
+            <option value="\vec">→ (Vektor-Pfeil)</option>
+            <option value="\ddot">¨ (Doppelpunkt)</option>
+            <option value="\breve">˘ (Breve)</option>
+            <option value="\check">ˇ (Haken)</option>
+            <option value="\acute">´ (Akut)</option>
+            <option value="\grave">` (Gravis)</option>
+            <option value="\mathring">° (Ring)</option>
+            <option value="\overline">¯ (Überstrich)</option>
+            <option value="\underline">_ (Unterstrich)</option>
         </select>
     </div>
 
@@ -192,7 +196,6 @@
     <div id="preview" class="output-field"></div>
 
     <script>
-        // Globale Variablen für das aktive Feld und die Cursorposition
         let activeElement = null;
         let cursorPos = 0;
 
