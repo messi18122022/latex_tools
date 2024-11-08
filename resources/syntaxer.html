@@ -7,31 +7,38 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #f0f0f0;
             text-align: center;
             margin: 20px;
         }
-        .main-field, .output-field {
-            font-size: 1.5em;
-            margin-top: 10px;
-            display: inline-block;
-            text-align: center;
-            padding: 5px;
+        h1 {
+            color: #ffffff;
         }
         .symbol-field {
             display: grid;
             grid-template-areas: 
                 "sup-before main sup-after"
                 "sub-before main sub-after";
-            gap: 5px;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
         }
         .symbol-field input {
-            width: 50px;
+            width: 100px;
+            padding: 10px;
+            font-size: 1.2em;
             text-align: center;
+            border-radius: 5px;
+            border: none;
+            background-color: #444;
+            color: #f0f0f0;
         }
         #main-symbol {
-            width: 80px;
             grid-area: main;
+            width: 120px;
             font-size: 1.5em;
+            background-color: #555;
         }
         #sup-before { grid-area: sup-before; }
         #sub-before { grid-area: sub-before; }
@@ -39,26 +46,57 @@
         #sub-after { grid-area: sub-after; }
 
         .dropdown-symbol {
-            margin: 15px;
+            margin: 20px;
+        }
+        .dropdown-symbol select {
+            font-size: 1em;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #444;
+            color: #f0f0f0;
         }
         .greek-keyboard {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            max-width: 400px;
-            margin: auto;
+            gap: 10px;
+            max-width: 600px;
+            margin: 20px auto;
         }
         .greek-keyboard button {
             font-size: 1em;
-            padding: 5px;
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background-color: #555;
+            color: #f0f0f0;
             cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .greek-keyboard button:hover {
+            background-color: #666;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #5a8ff0;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4a7ed0;
         }
         #output {
             margin-top: 20px;
             font-family: monospace;
-            background-color: #f0f0f0;
+            background-color: #444;
             padding: 10px;
             border-radius: 5px;
+            color: #f0f0f0;
         }
     </style>
 </head>
@@ -122,12 +160,12 @@
         <button onclick="insertSymbol('χ')">χ</button>
         <button onclick="insertSymbol('ψ')">ψ</button>
         <button onclick="insertSymbol('ω')">ω</button>
-        <button onclick="insertSymbol('ϵ')">ϵ</button> <!-- Alternative epsilon -->
-        <button onclick="insertSymbol('ϑ')">ϑ</button> <!-- Alternative theta -->
-        <button onclick="insertSymbol('ϖ')">ϖ</button> <!-- Alternative pi -->
-        <button onclick="insertSymbol('ϱ')">ϱ</button> <!-- Alternative rho -->
-        <button onclick="insertSymbol('ς')">ς</button> <!-- Alternative sigma -->
-        <button onclick="insertSymbol('ϕ')">ϕ</button> <!-- Alternative phi -->
+        <button onclick="insertSymbol('ϵ')">ϵ</button>
+        <button onclick="insertSymbol('ϑ')">ϑ</button>
+        <button onclick="insertSymbol('ϖ')">ϖ</button>
+        <button onclick="insertSymbol('ϱ')">ϱ</button>
+        <button onclick="insertSymbol('ς')">ς</button>
+        <button onclick="insertSymbol('ϕ')">ϕ</button>
 
         <!-- Großbuchstaben -->
         <button onclick="insertSymbol('Γ')">Γ</button>
@@ -146,6 +184,8 @@
     <!-- Button zum Generieren des LaTeX Codes -->
     <button onclick="generateLatexCode()">Generate LaTeX Code</button>
 
+    <!-- Ausgabe des LaTeX Codes -->
+    <div id="output" class="output-field"></div>
     <script>
         // Globale Variablen für das aktive Feld und die Cursorposition
         let activeElement = null;
