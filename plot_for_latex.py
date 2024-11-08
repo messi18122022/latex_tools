@@ -111,6 +111,16 @@ class CSVPlotterApp:
         if not file_path:
             return  # Abbrechen, falls der Benutzer keinen Pfad angibt
 
+        def prepare_label(text):
+            """Prüft, ob LaTeX-Syntax verwendet wird und passt Matplotlib entsprechend an."""
+            if "$" in text or "\\" in text:
+                plt.rcParams['text.usetex'] = True  # LaTeX-Interpretation aktivieren
+                return text
+            else:
+                plt.rcParams['text.usetex'] = False  # LaTeX-Interpretation deaktivieren
+                return text  # Einfache Texteingabe ohne LaTeX zurückgeben
+
+
         # Sammeln aller Projektdaten
         project_data = {
             "dataframes": {name: df.to_dict() for name, df in self.dataframes.items()},
@@ -122,7 +132,7 @@ class CSVPlotterApp:
                     "x_column": x_dropdown.get(),
                     "y_column": y_dropdown.get(),
                     "visibility": visibility_dropdown.get(),
-                    "legend_name": name_entry.get(),
+                    "legend_name": prepare_label(name_entry.get()),
                     "color": color_dropdown.get(),
                     "line_width": line_width_entry.get(),
                     "line_style": line_style_dropdown.get(),
@@ -295,11 +305,20 @@ class CSVPlotterApp:
         settings_frame = tk.Frame(plot_window, padx=10, pady=10)
         settings_frame.pack(side=tk.LEFT, fill=tk.Y)
 
+        def prepare_label(text):
+            """Prüft, ob LaTeX-Syntax verwendet wird und passt Matplotlib entsprechend an."""
+            if "$" in text or "\\" in text:
+                plt.rcParams['text.usetex'] = True  # LaTeX-Interpretation aktivieren
+                return text
+            else:
+                plt.rcParams['text.usetex'] = False  # LaTeX-Interpretation deaktivieren
+                return text  # Einfache Texteingabe ohne LaTeX zurückgeben
+
         # Funktion zur Anwendung und Aktualisierung der Einstellungen
         def apply_settings():
             # Aktualisiere plot_settings mit Werten aus Eingabefeldern
-            self.plot_settings['x_label'] = x_label_entry.get()
-            self.plot_settings['y_label'] = y_label_entry.get()
+            self.plot_settings['x_label'] = prepare_label(x_label_entry.get())
+            self.plot_settings['y_label'] = prepare_label(y_label_entry.get())
             self.plot_settings['x_min'] = float(x_min_entry.get()) if x_min_entry.get() else None
             self.plot_settings['x_max'] = float(x_max_entry.get()) if x_max_entry.get() else None
             self.plot_settings['y_min'] = float(y_min_entry.get()) if y_min_entry.get() else None
@@ -455,7 +474,7 @@ class CSVPlotterApp:
                 selected_file_y = file_dropdown_y.get()
                 x_column = x_dropdown.get()
                 y_column = y_dropdown.get()
-                legend_name = name_entry.get()
+                legend_name = prepare_label(name_entry.get())
                 visibility = visibility_dropdown.get()
                 color = color_dropdown.get()
                 line_width = float(line_width_entry.get())
@@ -565,6 +584,16 @@ class CSVPlotterApp:
         update_plot()
 
     def export_tex(self):
+
+        def prepare_label(text):
+            """Prüft, ob LaTeX-Syntax verwendet wird und passt Matplotlib entsprechend an."""
+            if "$" in text or "\\" in text:
+                plt.rcParams['text.usetex'] = True  # LaTeX-Interpretation aktivieren
+                return text
+            else:
+                plt.rcParams['text.usetex'] = False  # LaTeX-Interpretation deaktivieren
+                return text  # Einfache Texteingabe ohne LaTeX zurückgeben
+
         # Öffne einen Speicherdialog mit vorgeschlagenem Dateinamen
         file_path = filedialog.asksaveasfilename(defaultextension=".tex", filetypes=[("TeX files", "*.tex")], initialfile="Plot.tex")
         if not file_path:
@@ -646,7 +675,7 @@ class CSVPlotterApp:
             line_width = float(line_width_entry.get())
             line_style = {'durchgezogen': 'solid', 'gestrichelt': 'dashed', 'keine': 'only marks'}[line_style_dropdown.get()]
             marker = {'keine': '', 'Kreis': '*', '+': '+*', 'Dreieck': 'triangle*', 'Quadrat': 'square*'}[marker_dropdown.get()]
-            legend_name = name_entry.get()
+            legend_name = prepare_label(name_entry.get())
 
             tikz_code += f"""
             \\addplot[
@@ -795,6 +824,15 @@ class CSVPlotterApp:
         preview_window.title("Plot Vorschau")
         preview_window.geometry("800x600")
 
+        def prepare_label(text):
+            """Prüft, ob LaTeX-Syntax verwendet wird und passt Matplotlib entsprechend an."""
+            if "$" in text or "\\" in text:
+                plt.rcParams['text.usetex'] = True  # LaTeX-Interpretation aktivieren
+                return text
+            else:
+                plt.rcParams['text.usetex'] = False  # LaTeX-Interpretation deaktivieren
+                return text  # Einfache Texteingabe ohne LaTeX zurückgeben
+
         # Schließe-Button hinzufügen
         close_button = tk.Button(preview_window, text="Close", command=preview_window.destroy)
         close_button.pack(side=tk.BOTTOM, pady=10)
@@ -807,7 +845,7 @@ class CSVPlotterApp:
             selected_file_y = file_dropdown_y.get()
             x_column = x_dropdown.get()
             y_column = y_dropdown.get()
-            legend_name = name_entry.get()
+            legend_name = prepare_label(name_entry.get())
             visibility = visibility_dropdown.get()
             color = color_dropdown.get()
             line_width = float(line_width_entry.get())
@@ -848,13 +886,22 @@ class CSVPlotterApp:
         visible_dataframes = {}
         visible_rows = []
 
+        def prepare_label(text):
+            """Prüft, ob LaTeX-Syntax verwendet wird und passt Matplotlib entsprechend an."""
+            if "$" in text or "\\" in text:
+                plt.rcParams['text.usetex'] = True  # LaTeX-Interpretation aktivieren
+                return text
+            else:
+                plt.rcParams['text.usetex'] = False  # LaTeX-Interpretation deaktivieren
+                return text  # Einfache Texteingabe ohne LaTeX zurückgeben
+
         for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
             if visibility_dropdown.get() == "sichtbar":
                 selected_file_x = file_dropdown_x.get()
                 selected_file_y = file_dropdown_y.get()
                 x_column = x_dropdown.get()
                 y_column = y_dropdown.get()
-                legend_name = name_entry.get()
+                legend_name = prepare_label(name_entry.get())
                 color = color_dropdown.get()
                 line_width = line_width_entry.get()
                 line_style = line_style_dropdown.get()
