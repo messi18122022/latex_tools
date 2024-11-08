@@ -202,7 +202,7 @@
             }
         }
 
-        // Funktion, um den LaTeX Code zu generieren
+        // Funktion, um den LaTeX Code zu generieren und direkt in die Zwischenablage zu kopieren
         function generateLatexCode() {
             const mainSymbol = document.getElementById("main-symbol").value;
             const supBefore = document.getElementById("sup-before").value;
@@ -221,8 +221,14 @@
             }
             latexCode += "$";
 
-            document.getElementById("output").innerText = "LaTeX Code: " + latexCode;
+            // LaTeX-Code in die Zwischenablage kopieren
+            navigator.clipboard.writeText(latexCode).then(() => {
+                alert("LaTeX-Code wurde in die Zwischenablage kopiert.");
+            }).catch(err => {
+                console.error('Fehler beim Kopieren in die Zwischenablage: ', err);
+            });
         }
+
     </script>
 
 </body>
