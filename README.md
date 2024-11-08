@@ -89,7 +89,7 @@ Damit ist die Einrichtung abgeschlossen.
 
 ## Übersicht
 
-Mit der CSV Plotter App können Sie:
+Mit der PlotGOAT App können Sie:
 
 - **CSV-Dateien laden** und im Programm verwalten
 - **Datenreihen auswählen und vergleichen** – wählen Sie die Daten, die im Diagramm angezeigt werden sollen
@@ -150,4 +150,4 @@ Ja, Sie können Projekte speichern und laden, sodass Sie mit verschiedenen Daten
 **Wofür ist der TeX-Export gedacht?**  
 Die `.tex`-Datei ist speziell für Nutzer von LaTeX gedacht und wird in wissenschaftlichen oder technischen Dokumenten verwendet. Wenn Sie LaTeX nicht verwenden, können Sie diese Funktion ignorieren.
 
-Mit der CSV Plotter App können Sie schnell und einfach Ihre Daten visualisieren und als Diagramme speichern – perfekt für Analysen und Berichte!
+Mit der PlotGOAT App können Sie schnell und einfach Ihre Daten visualisieren und als Diagramme speichern – perfekt für Analysen und Berichte!
