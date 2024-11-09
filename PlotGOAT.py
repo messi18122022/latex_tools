@@ -238,11 +238,11 @@ class PlotGOAT:
         row_frame.pack(pady=5, fill="x")
 
         # File selection dropdowns
-        file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=30)
+        file_dropdown_x = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 0, width=20)
         x_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         x_dropdown.grid(row=0, column=1, padx=5)
 
-        file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=30)
+        file_dropdown_y = self.create_dropdown(row_frame, list(self.dataframes.keys()), 0, 2, width=20)
         y_dropdown = ttk.Combobox(row_frame, state="readonly", width=10)
         y_dropdown.grid(row=0, column=3, padx=5)
 
@@ -259,7 +259,7 @@ class PlotGOAT:
         name_entry.grid(row=0, column=5, padx=5)
 
         # Color selection dropdown
-        color_dropdown = ttk.Combobox(row_frame, state="readonly", width=7)
+        color_dropdown = ttk.Combobox(row_frame, state="readonly", width=5)
         color_dropdown["values"] = ["blue", "red", "teal", "orange", "darkgray", "cyan", "magenta", "brown", "purple"]
         color_dropdown.set("blue")  # Default color is blue
         color_dropdown.grid(row=0, column=6, padx=5)
@@ -270,7 +270,7 @@ class PlotGOAT:
         line_width_entry.grid(row=0, column=7, padx=5)
 
         # Line style dropdown
-        line_style_dropdown = self.create_dropdown(row_frame, ["durchgezogen", "gestrichelt", "keine"], 0, 8, default_value="durchgezogen", width=10)
+        line_style_dropdown = self.create_dropdown(row_frame, ["|", ":", "keine"], 0, 8, default_value="|", width=3)
 
         # Marker style dropdown
         marker_dropdown = self.create_dropdown(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
@@ -481,8 +481,8 @@ class PlotGOAT:
 
                 # Map line style and marker to matplotlib options
                 line_style_map = {
-                    "durchgezogen": '-',
-                    "gestrichelt": '--',
+                    "|": '-',
+                    ":": '--',
                     "keine": ''
                 }
                 marker_map = {
@@ -661,7 +661,7 @@ class PlotGOAT:
             color_latex = color_dropdown.get()
 
             line_width = float(line_width_entry.get())
-            line_style = {'durchgezogen': 'solid', 'gestrichelt': 'dashed', 'keine': 'only marks'}[line_style_dropdown.get()]
+            line_style = {'|': 'solid', ':': 'dashed', 'keine': 'only marks'}[line_style_dropdown.get()]
             marker = {'keine': '', 'Kreis': '*', '+': '+*', 'Dreieck': 'triangle*', 'Quadrat': 'square*'}[marker_dropdown.get()]
             legend_name = name_entry.get()
 
@@ -746,7 +746,7 @@ class PlotGOAT:
             line_style, marker = row[8].get(), row[9].get()
 
             # Konvertiere Zeichenstile und Marker
-            line_style_map = {"durchgezogen": '-', "gestrichelt": '--', "keine": ''}
+            line_style_map = {"|": '-', ":": '--', "keine": ''}
             marker_map = {"keine": '', "Kreis": 'o', "+": '+', "Dreieck": '^', "Quadrat": 's'}
 
             linestyle, mark = line_style_map.get(line_style, '-'), marker_map.get(marker, '')
