@@ -311,9 +311,13 @@ class PlotGOAT:
 
         # Funktion zur Anwendung und Aktualisierung der Einstellungen
         def apply_settings():
+            def get_text_widget_value(text_widget):
+                # Entferne Zeilenumbrüche aus dem Textfeld, damit sie für LaTeX richtig formatiert sind.
+                return text_widget.get("1.0", "end-1c").replace("\n", "")
+
             # Aktualisiere plot_settings mit Werten aus Eingabefeldern
-            self.plot_settings['x_label'] = x_label_entry.get()
-            self.plot_settings['y_label'] = y_label_entry.get()
+            self.plot_settings['x_label'] = get_text_widget_value(x_label_text)
+            self.plot_settings['y_label'] = get_text_widget_value(y_label_text)
             self.plot_settings['x_min'] = float(x_min_entry.get()) if x_min_entry.get() else None
             self.plot_settings['x_max'] = float(x_max_entry.get()) if x_max_entry.get() else None
             self.plot_settings['y_min'] = float(y_min_entry.get()) if y_min_entry.get() else None
@@ -368,16 +372,15 @@ class PlotGOAT:
         update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
         update_button.pack(pady=10)
 
-        # Einstellungsfelder für Plot-Einstellungen erstellen
         tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
-        x_label_entry = tk.Entry(settings_frame)
-        x_label_entry.insert(0, self.plot_settings['x_label'])
-        x_label_entry.pack(anchor="w")
+        x_label_text = tk.Text(settings_frame, height=3, width=30, wrap="none")
+        x_label_text.insert("1.0", self.plot_settings['x_label'])
+        x_label_text.pack(anchor="w")
 
         tk.Label(settings_frame, text="Y-axis Label:").pack(anchor="w")
-        y_label_entry = tk.Entry(settings_frame)
-        y_label_entry.insert(0, self.plot_settings['y_label'])
-        y_label_entry.pack(anchor="w")
+        y_label_text = tk.Text(settings_frame, height=3, width=30, wrap="none")
+        y_label_text.insert("1.0", self.plot_settings['y_label'])
+        y_label_text.pack(anchor="w")
 
         # Min/Max Eingaben für Achsen und weitere Einstellungen
         tk.Label(settings_frame, text="X Min:").pack(anchor="w")
