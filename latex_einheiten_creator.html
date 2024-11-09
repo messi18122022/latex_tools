@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LaTeX Einheiten-Creator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #333;
+            color: #f0f0f0;
+            text-align: center;
+            margin: 20px;
+        }
+        h1 {
+            color: #ffffff;
+        }
+        .unit-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .unit-row select, .unit-row input {
+            padding: 10px;
+            font-size: 1em;
+            border-radius: 5px;
+            border: none;
+            background-color: #444;
+            color: #f0f0f0;
+        }
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 1.2em;
+            border: none;
+            border-radius: 5px;
+            background-color: #5a8ff0;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #4a7ed0;
+        }
+        #output, #preview {
+            margin-top: 20px;
+            font-family: monospace;
+            background-color: #444;
+            padding: 10px;
+            border-radius: 5px;
+            color: #f0f0f0;
+        }
+    </style>
+    <script>
+      window.MathJax = {
+        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+        svg: { fontCache: 'global' }
+      };
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+
+    <h1>LaTeX Einheiten-Creator</h1>
+
+    <div id="unit-rows">
+        <div class="unit-row">
+            <select class="prefix">
+                <option value="">Kein Präfix</option>
+                <option value="k">k (Kilo)</option>
+                <option value="M">M (Mega)</option>
+            </select>
+            <select class="unit">
+                <option value="m">m (Meter)</option>
+                <option value="s">s (Sekunde)</option>
+            </select>
+            <input type="number" class="exponent" placeholder="Potenz">
+            <button onclick="removeRow(this)">Entfernen</button>
+        </div>
+    </div>
+
+    <button onclick="addRow()">Zeile hinzufügen</button>
+    <button onclick="generateLatexCode()">Generate LaTeX Code</button>
+
+    <div id="output" class="output-field"></div>
+    <div id="preview" class="output-field"></div>
+
+    <script>
+        function addRow() {
+            const rowContainer = document.getElementById("unit-rows");
+            const newRow = document.createElement("div");
+            newRow.classList.add("unit-row");
+
+            newRow.innerHTML = `
+                <select class="prefix">
+                    <option value="">Kein Präfix</option>
+                    <option value="k">k (Kilo)</option>
+                    <option value="M">M (Mega)</option>
+                </select>
+                <select class="unit">
+                    <option value="m">m (Meter)</option>
+                    <option value="s">s (Sekunde)</option>
+                </select>
+                <input type="number" class="exponent" placeholder="Potenz">
+                <button onclick="removeRow(this)">Entfernen</button>
+            `;
+            rowContainer.appendChild(newRow);
+        }
+
+        function removeRow(button) {
+            button.parentElement.remove();
+        }
+
+        function generateLatexCode() {
+            const rows = document.querySelectorAll(".unit-row");
+            let units = "";
+
+            rows.forEach(row => {
+                const prefix = row.querySelector(".prefix").value;
+                const unit = row.querySelector(".unit").value;
+                const exponent = row.querySelector(".exponent").value;
+
+                units += prefix + unit;
+                if (exponent) units += "^{" + exponent + "} ";
+            });
+
+            const latexCode = `\\SI{}{${units.trim()}}`;
+
+            document.getElementById("output").innerText = latexCode;
+            document.getElementById("preview").innerHTML = "$" + latexCode + "$";
+            MathJax.typesetPromise([document.getElementById("preview")]);
+
+            navigator.clipboard.writeText(latexCode).then(() => {
+                alert("LaTeX-Code wurde automatisch in die Zwischenablage kopiert.");
+            }).catch(err => {
+                console.error('Fehler beim Kopieren in die Zwischenablage: ', err);
+            });
+        }
+    </script>
+
+</body>
+</html>
