@@ -121,8 +121,10 @@
                 const unit = row.querySelector(".unit").value;
                 const exponent = row.querySelector(".exponent").value;
 
-                // Erstelle den Einheiten-String
+                // Füge Präfix und Einheit hinzu
                 units += prefix + unit;
+                
+                // Füge Potenz hinzu, wenn sie nicht 1 ist
                 if (exponent && exponent != "1") {
                     units += `\\tothe{${exponent}} `;
                 } else {
@@ -130,6 +132,7 @@
                 }
             });
 
+            // Generiere den finalen LaTeX-Code
             const latexCode = `\\SI{}{${units.trim()}}`;
 
             document.getElementById("output").innerText = latexCode;
