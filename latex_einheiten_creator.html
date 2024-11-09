@@ -132,6 +132,9 @@
                 }
             });
 
+            // Entferne doppelte Backslashes, falls vorhanden
+            units = units.replace(/\\\\/g, "\\");
+
             // Generiere den finalen LaTeX-Code
             const latexCode = `\\SI{}{${units.trim()}}`;
 
