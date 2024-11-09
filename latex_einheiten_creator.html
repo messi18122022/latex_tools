@@ -43,7 +43,7 @@
         button:hover {
             background-color: #4a7ed0;
         }
-        #output, #preview {
+        #output {
             margin-top: 20px;
             font-family: monospace;
             background-color: #444;
@@ -52,13 +52,6 @@
             color: #f0f0f0;
         }
     </style>
-    <script>
-      window.MathJax = {
-        tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
-        svg: { fontCache: 'global' }
-      };
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 </head>
 <body>
 
@@ -132,7 +125,6 @@
     <button onclick="generateLatexCode()">Generate LaTeX Code</button>
 
     <div id="output" class="output-field"></div>
-    <div id="preview" class="output-field"></div>
 
     <script>
         function addRow() {
@@ -217,10 +209,7 @@
                 const unit = row.querySelector(".unit").value;
                 const exponent = row.querySelector(".exponent").value;
 
-                // Erzeuge Präfix- und Einheit-Code
                 units += `${prefix}${unit}`;
-
-                // Potenz nur hinzufügen, wenn sie nicht 1 ist und nicht leer
                 if (exponent && exponent != "1") {
                     units += `\\tothe{${exponent}} `;
                 } else {
@@ -228,18 +217,14 @@
                 }
             });
 
-            // Entferne doppelte Backslashes, falls vorhanden
-            units = units.replace(/\\\\/g, "\\");
+            units = units.replace(/\\\\/g, "\\");  // Entferne doppelte Backslashes
 
-            // Generiere den finalen LaTeX-Code
             const latexCode = `\\SI{}{${units.trim()}}`;
 
-            // Ausgabe des Codes und MathJax-Vorschau
+            // Zeige den generierten LaTeX-Code an
             document.getElementById("output").innerText = latexCode;
-            document.getElementById("preview").innerHTML = "$" + latexCode + "$";
-            MathJax.typesetPromise([document.getElementById("preview")]);
 
-            // Kopieren des Codes in die Zwischenablage
+            // Kopiere den LaTeX-Code in die Zwischenablage
             navigator.clipboard.writeText(latexCode).then(() => {
                 alert("LaTeX-Code wurde automatisch in die Zwischenablage kopiert.");
             }).catch(err => {
