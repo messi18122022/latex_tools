@@ -121,10 +121,10 @@
                 const unit = row.querySelector(".unit").value;
                 const exponent = row.querySelector(".exponent").value;
 
-                // Füge Präfix und Einheit hinzu
-                units += prefix + unit;
-                
-                // Füge Potenz hinzu, wenn sie nicht 1 ist
+                // Erzeuge Präfix- und Einheit-Code
+                units += `${prefix}${unit}`;
+
+                // Potenz nur hinzufügen, wenn sie nicht 1 ist und nicht leer
                 if (exponent && exponent != "1") {
                     units += `\\tothe{${exponent}} `;
                 } else {
@@ -135,10 +135,12 @@
             // Generiere den finalen LaTeX-Code
             const latexCode = `\\SI{}{${units.trim()}}`;
 
+            // Ausgabe des Codes und MathJax-Vorschau
             document.getElementById("output").innerText = latexCode;
             document.getElementById("preview").innerHTML = "$" + latexCode + "$";
             MathJax.typesetPromise([document.getElementById("preview")]);
 
+            // Kopieren des Codes in die Zwischenablage
             navigator.clipboard.writeText(latexCode).then(() => {
                 alert("LaTeX-Code wurde automatisch in die Zwischenablage kopiert.");
             }).catch(err => {
