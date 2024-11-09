@@ -68,12 +68,12 @@
         <div class="unit-row">
             <select class="prefix">
                 <option value="">Kein Präfix</option>
-                <option value="k">k (Kilo)</option>
-                <option value="M">M (Mega)</option>
+                <option value="\\kilo">k (Kilo)</option>
+                <option value="\\mega">M (Mega)</option>
             </select>
             <select class="unit">
-                <option value="m">m (Meter)</option>
-                <option value="s">s (Sekunde)</option>
+                <option value="\\meter">m (Meter)</option>
+                <option value="\\second">s (Sekunde)</option>
             </select>
             <input type="number" class="exponent" placeholder="Potenz">
             <button onclick="removeRow(this)">Entfernen</button>
@@ -95,12 +95,12 @@
             newRow.innerHTML = `
                 <select class="prefix">
                     <option value="">Kein Präfix</option>
-                    <option value="k">k (Kilo)</option>
-                    <option value="M">M (Mega)</option>
+                    <option value="\\kilo">k (Kilo)</option>
+                    <option value="\\mega">M (Mega)</option>
                 </select>
                 <select class="unit">
-                    <option value="m">m (Meter)</option>
-                    <option value="s">s (Sekunde)</option>
+                    <option value="\\meter">m (Meter)</option>
+                    <option value="\\second">s (Sekunde)</option>
                 </select>
                 <input type="number" class="exponent" placeholder="Potenz">
                 <button onclick="removeRow(this)">Entfernen</button>
@@ -121,8 +121,13 @@
                 const unit = row.querySelector(".unit").value;
                 const exponent = row.querySelector(".exponent").value;
 
+                // Erstelle den Einheiten-String
                 units += prefix + unit;
-                if (exponent) units += "^{" + exponent + "} ";
+                if (exponent && exponent != "1") {
+                    units += `\\tothe{${exponent}} `;
+                } else {
+                    units += " ";
+                }
             });
 
             const latexCode = `\\SI{}{${units.trim()}}`;
