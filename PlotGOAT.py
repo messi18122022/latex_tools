@@ -364,6 +364,10 @@ class PlotGOAT:
             except Exception as e:
                 self.show_error("Es gab einen Fehler in der LaTeX-Syntax. Bitte überprüfen Sie die Achsenbeschriftungen.")
 
+        # "Plot aktualisieren" Button
+        update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
+        update_button.pack(pady=10)
+
         # Einstellungsfelder für Plot-Einstellungen erstellen
         tk.Label(settings_frame, text="X-axis Label:").pack(anchor="w")
         x_label_entry = tk.Entry(settings_frame)
@@ -449,10 +453,6 @@ class PlotGOAT:
         y_ticks_entry = tk.Entry(settings_frame)
         y_ticks_entry.insert(0, ','.join(map(str, self.plot_settings['y_ticks'])) if self.plot_settings['y_ticks'] else "")
         y_ticks_entry.pack(anchor="w")
-
-        # "Plot aktualisieren" Button
-        update_button = tk.Button(settings_frame, text="Plot aktualisieren", command=apply_settings)
-        update_button.pack(pady=10)
 
         # Erstelle das Plot-Fenster
         fig, ax = plt.subplots(figsize=(6, 4))
