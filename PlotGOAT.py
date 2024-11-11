@@ -190,22 +190,22 @@ class PlotGOAT:
         tk.messagebox.showinfo("Erfolg", "Projekt wurde erfolgreich geladen.")
 
     def load_csv(self):
-        # Open file dialog to select CSV
-        file_paths = filedialog.askopenfilenames(filetypes=[("CSV files", "*.csv")])
+        # Open file dialog to select CSV, TXT, or Excel files
+        file_paths = filedialog.askopenfilenames(filetypes=[("CSV/TXT files", "*.csv *.txt"), ("Excel files", "*.xlsx")])
         for file_path in file_paths:
             if file_path:
-                # Load the CSV into a DataFrame, trying semicolon first, then comma, and then tab
+                # Load the file into a DataFrame based on its extension
                 try:
-                    df = pd.read_csv(file_path, delimiter=';')
-                except pd.errors.ParserError:
-                    try:
-                        df = pd.read_csv(file_path, delimiter=',')
-                    except pd.errors.ParserError:
-                        try:
-                            df = pd.read_csv(file_path, delimiter='\t')
-                        except pd.errors.ParserError:
-                            self.show_error(f"Die Datei {file_path} konnte nicht geladen werden. Bitte prüfen Sie das Dateiformat.")
-                            continue
+                    if file_path.endswith('.xlsx'):
+                        # Load Excel file
+                        df = pd.read_excel(file_path)
+                    else:
+                        # Attempt to load as CSV or TXT with automatic delimiter detection
+                        df = pd.read_csv(file_path, sep=None, engine='python')
+                except Exception as e:
+                    self.show_error(f"Die Datei {file_path} konnte nicht geladen werden. Fehler: {str(e)}")
+                    continue
+
                 file_name = file_path.split('/')[-1]  # Get the file name from path
                 self.dataframes[file_name] = df
                 
