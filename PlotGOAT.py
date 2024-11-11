@@ -27,7 +27,7 @@ class PlotGOAT:
         self.file_frame = tk.Frame(root, padx=10, pady=10)
         self.file_frame.grid(row=0, column=0, sticky="nw")
 
-        self.upload_button = self.create_button(self.file_frame, "Upload CSV", self.load_csv, 0, 0)
+        self.upload_button = self.create_button(self.file_frame, "Upload Excel, CSV, TXT", self.load_csv, 0, 0)
 
         self.files_listbox = tk.Listbox(self.file_frame, selectmode=tk.SINGLE, height=7, width=50)
         self.files_listbox.grid(row=1, column=0, pady=5)
