@@ -194,21 +194,27 @@ class PlotGOAT:
         file_paths = filedialog.askopenfilenames(filetypes=[("CSV/TXT files", "*.csv *.txt"), ("Excel files", "*.xlsx")])
         for file_path in file_paths:
             if file_path:
-                # Load the file into a DataFrame based on its extension
-                try:
-                    if file_path.endswith('.xlsx'):
-                        # Load Excel file
-                        df = pd.read_excel(file_path)
-                    else:
-                        # Attempt to load as CSV or TXT with automatic delimiter detection
-                        df = pd.read_csv(file_path, sep=None, engine='python')
-                except Exception as e:
-                    self.show_error(f"Die Datei {file_path} konnte nicht geladen werden. Fehler: {str(e)}")
+                # Try loading the file with different encodings
+                encodings = ['utf-8', 'ISO-8859-1', 'cp1252']  # Common encodings for data files
+                for encoding in encodings:
+                    try:
+                        if file_path.endswith('.xlsx'):
+                            # Load Excel file
+                            df = pd.read_excel(file_path)
+                        else:
+                            # Load CSV or TXT file with automatic delimiter detection
+                            df = pd.read_csv(file_path, sep=None, engine='python', encoding=encoding)
+                        break  # Break if loading was successful
+                    except Exception as e:
+                        continue  # Try the next encoding if there's an error
+                else:
+                    # If all encodings fail, show an error
+                    self.show_error(f"Die Datei {file_path} konnte nicht geladen werden. Bitte prüfen Sie das Dateiformat.")
                     continue
 
                 file_name = file_path.split('/')[-1]  # Get the file name from path
                 self.dataframes[file_name] = df
-                
+
                 # Update dropdown options in existing rows
                 for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_button, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
                     file_dropdown_x["values"] = list(self.dataframes.keys())
