@@ -1,5 +1,29 @@
 # Einrichten
 
+## Windows
+### 1. Visual Studio Code (VSCode) installieren:
+1. Drücke [hier](https://code.visualstudio.com/Download)
+2. **Klicke auf:** "Download for Windows".
+3. **Öffne die Datei:** Doppelklick auf die heruntergeladene Datei.
+4. **Akzeptiere** alle Standardoptionen und klicke immer auf **"Weiter"**, dann auf **"Installieren"**.
+5. **Warte,** bis die Installation abgeschlossen ist, und öffne anschließend Visual Studio Code.
+
+### 2. Python in Visual Studio Code installieren (über den Microsoft Store):
+1. **Öffne Visual Studio Code.**
+2. **Installiere die Python-Erweiterung:**
+   - Klicke links auf das **Puzzle-Symbol (Erweiterungen)**.
+   - **Suche nach "Python"** und klicke auf **"Installieren"** bei der Erweiterung von Microsoft.
+3. **Python-Datei erstellen:**
+   - Klicke auf "File" → "New File".
+   - Speichere die Datei als `test.py`.
+4. **Python aus dem Microsoft Store installieren:**
+   - Schreibe z. B. `print("Hallo, Welt!")` in die Datei.
+   - **Rechtsklick** in die Datei und wähle **"Run Python File"**.
+   - Visual Studio Code erkennt, dass Python fehlt, und bietet an, **Python aus dem Microsoft Store** zu installieren.
+   - **Klicke auf "Install"**, und folge den Anweisungen, um Python aus dem Store zu installieren.
+
+Fertig! Python ist jetzt für Visual Studio Code einsatzbereit.
+
 ## Verknüpfung im eigenen Verzeichnis erstellen: Windows
 
 1. **Git installieren**:
@@ -17,11 +41,6 @@
      - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
        ```bash
        git clone https://github.com/messi18122022/latex_tools.git
-       ```
-   - **Ordner mit den neuen Dateien öffnen**:
-     - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
-       ```bash
-       cd latex_tools
        ```
 
 3. **Dateien in VSCode öffnen**:
@@ -56,11 +75,6 @@
      - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
        ```bash
        git clone https://github.com/messi18122022/latex_tools.git
-       ```
-   - **Ordner öffnen**:
-     - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
-       ```bash
-       cd latex_tools
        ```
 
 3. **Dateien in VSCode öffnen**:
