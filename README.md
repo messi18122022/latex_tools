@@ -50,7 +50,7 @@ Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst
 ```bash
 pip3 install pandas matplotlib numpy scipy seaborn
 ```
-6. **Um immer die neuesten Updates zu bekommen** Jedes mal kurz eingeben, um die neueste Version der App runterzuladen:
+6. **Um immer die neuesten Updates zu bekommen:** Jedes mal kurz im Terminal ausführen, um die neueste Version der App runterzuladen:
    ```bash
      git pull
      ```
@@ -111,7 +111,7 @@ Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst
 ```bash
 pip3 install pandas matplotlib numpy scipy seaborn
 ```
-6. **Um immer die neuesten Updates zu bekommen** Jedes mal kurz eingeben, um die neueste Version der App runterzuladen:
+6. **Um immer die neuesten Updates zu bekommen:** Jedes mal kurz im Terminal ausführen, um die neueste Version der App runterzuladen:
    ```bash
      git pull
      ```
