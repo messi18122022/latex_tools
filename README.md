@@ -57,6 +57,7 @@ pip3 install pandas matplotlib numpy scipy seaborn
 7. Python Skript ausführen (oben rechts)
 
 Damit ist die Einrichtung abgeschlossen.
+
 ---
 ## macOS
 ### 1. Visual Studio Code (VSCode) installieren:
@@ -117,6 +118,7 @@ pip3 install pandas matplotlib numpy scipy seaborn
 7. Python Skript ausführen (oben rechts)
 
 Damit ist die Einrichtung abgeschlossen.
+
 ---
 # plot for latex App - Benutzerhandbuch
 
