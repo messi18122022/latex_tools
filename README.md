@@ -116,8 +116,3 @@ pip3 install pandas matplotlib numpy scipy seaborn
 7. Python Skript ausführen (oben rechts)
 
 Damit ist die Einrichtung abgeschlossen.
-
-**Wofür ist der TeX-Export gedacht?**  
-Die `.tex`-Datei ist speziell für Nutzer von LaTeX gedacht und wird in wissenschaftlichen oder technischen Dokumenten verwendet. Wenn Sie LaTeX nicht verwenden, können Sie diese Funktion ignorieren.
-
-Mit der PlotGOAT App können Sie schnell und einfach Ihre Daten visualisieren und als Diagramme speichern – perfekt für Analysen und Berichte!
