@@ -21,11 +21,7 @@
    - **Rechtsklick** in die Datei und wähle **"Run Python File"**.
    - Visual Studio Code erkennt, dass Python fehlt, und bietet an, **Python aus dem Microsoft Store** zu installieren.
    - **Klicke auf "Install"**, und folge den Anweisungen, um Python aus dem Store zu installieren.
-
-Fertig! Python ist jetzt für Visual Studio Code einsatzbereit.
-
-## Verknüpfung im eigenen Verzeichnis erstellen: Windows
-
+### 3. Git einrichten, um immer auf die neueste Version zugreifen zu können
 1. **Git installieren**:
    - Lade Git von [hier](https://git-scm.com/downloads/win) herunter und installiere es (immer auf „Weiter“ klicken).
 
@@ -42,28 +38,54 @@ Fertig! Python ist jetzt für Visual Studio Code einsatzbereit.
        ```bash
        git clone https://github.com/messi18122022/latex_tools.git
        ```
+## 4. Latex installieren
+Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst geht der Plotter NICHT.
 
-3. **Dateien in VSCode öffnen**:
-   - Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
-   - **Um immer die neuesten Updates zu bekommen**: Das musst du jedes Mal kurz eingeben, bevor du den Plotter verwendest. Öffne das Terminal in VSCode (oben im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
-     ```bash
+## 5. In VSCode das Programm öffnen und benutzen
+1. Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
+2. Öffne links beim Ordnersymbol die Ansicht für die Dateien
+3. Öffne PlotGOAT.py
+4. **Öffne ein neues Terminal** oben in der Leiste auf `Terminal` drücken, und `Neues Terminal` klicken
+5. Gib im Terminal von VSCode folgenden befehl ein und drücke Enter:
+```bash
+pip3 install pandas matplotlib numpy scipy seaborn
+```
+6. **Um immer die neuesten Updates zu bekommen** Jedes mal kurz eingeben, um die neueste Version der App runterzuladen:
+   ```bash
      git pull
      ```
----
-## Verknüpfung im eigenen Verzeichnis erstellen: macOS
+7. Python Skript ausführen (oben rechts)
 
+Damit ist die Einrichtung abgeschlossen.
+---
+## macOS
+### 1. Visual Studio Code (VSCode) installieren:
+1. Drücke [hier](https://code.visualstudio.com/Download)
+2. **Klicke auf:** "Download for Mac".
+3. **Akzeptiere** alle Standardoptionen und klicke immer auf **"Weiter"**, dann auf **"Installieren"**.
+4. **Warte,** bis die Installation abgeschlossen ist, und öffne anschließend Visual Studio Code.
+
+### 2. Python in Visual Studio Code installieren (über den Microsoft Store):
+1. **Öffne Visual Studio Code.**
+2. **Installiere die Python-Erweiterung:**
+   - Klicke links auf das **Puzzle-Symbol (Erweiterungen)**.
+   - **Suche nach "Python"** und klicke auf **"Installieren"** bei der Erweiterung von Microsoft.
+3. **Python-Datei erstellen:**
+   - Klicke auf "File" → "New File".
+   - Speichere die Datei als `test.py`.
+4. **Python aus dem Microsoft Store installieren:**
+   - Schreibe z. B. `print("Hallo, Welt!")` in die Datei.
+   - **Rechtsklick** in die Datei und wähle **"Run Python File"**.
+   - Visual Studio Code erkennt, dass Python fehlt, und bietet an, **Python aus dem Microsoft Store** zu installieren.
+   - **Klicke auf "Install"**, und folge den Anweisungen, um Python aus dem Store zu installieren.
+### 3. Git einrichten, um immer auf die neueste Version zugreifen zu können
 1. **Git installieren**:
-   - **Überprüfen**:
-     - Öffne das **Terminal** (über die Lupe rechts oben) und kopiere diesen Befehl, drücke dann **Enter**:
+   - **Überprüfen, es sollte schon installiert sein**:
+     - Öffne das **Terminal** (über die Lupe rechts oben in macOS) und kopiere diesen Befehl, drücke dann **Enter**:
        ```bash
        git --version
        ```
-   - **Falls nötig installieren**:
-     - Falls Git nicht installiert ist und du Homebrew hast, kopiere diesen Befehl, drücke **Enter**:
-       ```bash
-       brew install git
-       ```
-
+       Wenn du eine Version siehst, ist alles gut. Sonst musst du es noch installieren.
 2. **GitHub-Repository klonen**:
    - **Terminal öffnen** und zum Ordner wechseln, wo du die Verknüpfung speichern willst:
      - Kopiere diesen Befehl, füge ihn ins Terminal ein und drücke **Enter**:
@@ -76,26 +98,25 @@ Fertig! Python ist jetzt für Visual Studio Code einsatzbereit.
        ```bash
        git clone https://github.com/messi18122022/latex_tools.git
        ```
-
-3. **Dateien in VSCode öffnen**:
-   - Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
-   - **Um immer die neuesten Updates zu bekommen**: Das musst du jedes Mal kurz eingeben, bevor du den Plotter verwendest. Öffne das Terminal in VSCode (im Menü „Terminal > Neues Terminal“) und kopiere dort diesen Befehl, dann **Enter** drücken:
-     ```bash
-     git pull
-     ```
----
-## Latex installieren (wichtig)
+## 4. Latex installieren
 Lade [Latex](https://miktex.org/download) (die Programmiersprache) runter, sonst geht der Plotter NICHT.
 
----
-## Alle Module runterladen
-Gib im Terminal von VSCode folgenden befehl ein und drücke Enter:
+## 5. In VSCode das Programm öffnen und benutzen
+1. Öffne **VSCode** und gehe zu „Datei > Ordner öffnen“. Wähle den Ordner `latex_tools` aus.
+2. Öffne links beim Ordnersymbol die Ansicht für die Dateien
+3. Öffne PlotGOAT.py
+4. **Öffne ein neues Terminal** oben in der Leiste auf `Terminal` drücken, und `Neues Terminal` klicken
+5. Gib im Terminal von VSCode folgenden befehl ein und drücke Enter:
 ```bash
 pip3 install pandas matplotlib numpy scipy seaborn
 ```
+6. **Um immer die neuesten Updates zu bekommen** Jedes mal kurz eingeben, um die neueste Version der App runterzuladen:
+   ```bash
+     git pull
+     ```
+7. Python Skript ausführen (oben rechts)
 
 Damit ist die Einrichtung abgeschlossen.
-
 ---
 # plot for latex App - Benutzerhandbuch
 
