@@ -28,9 +28,9 @@
    - **Zum Ordner wechseln, wo du die Verknüpfung speichern willst**:
      - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
        ```bash
-       cd /Pfad/zum/Ordner
+       cd "/Pfad/zum/Ordner"
        ```
-     - Ersetze `/Pfad/zum/Ordner` durch den Ordner, in dem du die Dateien haben willst (z. B. `C:/Benutzer/DeinName/Downloads`).
+     - Ersetze `"/Pfad/zum/Ordner"` durch den Ordner, in dem du die Dateien haben willst (z. B. `"C:\Benutzer\DeinName\Downloads"`, muss in "" sein).
    - **Repository klonen**:
      - Kopiere diesen Befehl, füge ihn in Git Bash ein und drücke **Enter**:
        ```bash
