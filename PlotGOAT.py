@@ -19,70 +19,93 @@ plt.rcParams['text.latex.preamble'] = r'\usepackage{siunitx}'
 
 class PlotGOAT:
     def __init__(self, root):
+        # Neue Farbvariablen für das dunkle Design der GUI
+        DARK_BG_COLOR = "#2E2E2E"    # Dunkler Hintergrund
+        BLACK_FG_COLOR = "#000000"   # Schwarze Textfarbe für bessere Lesbarkeit
+        BUTTON_BG_COLOR = "#555555"  # Hintergrundfarbe für die Buttons
+        ENTRY_BG_COLOR = "#444444"   # Hintergrundfarbe für Eingabefelder
+        ENTRY_FG_COLOR = BLACK_FG_COLOR
+
+        # Setzen Sie den Hintergrund des Hauptfensters auf dunkel
         self.root = root
         self.root.title("PlotGOAT")
-        self.root.geometry("1500x1000")  # Set larger window size for better usability
+        self.root.geometry("1500x1000")  # Größere Fenstergröße für bessere Benutzerfreundlichkeit
+        self.root.configure(bg=DARK_BG_COLOR)
 
-        # Frame for file operations and buttons
-        self.file_frame = tk.Frame(root, padx=10, pady=10)
+        # Frame für Dateioperationen und Buttons
+        self.file_frame = tk.Frame(root, padx=10, pady=10, bg=DARK_BG_COLOR)
         self.file_frame.grid(row=0, column=0, sticky="nw")
 
+        # Buttons und Labels für Dateioperationen
         self.upload_button = self.create_button(self.file_frame, "Upload Excel, CSV, TXT", self.load_csv, 0, 0)
+        self.upload_button.configure(bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
 
-        self.files_listbox = tk.Listbox(self.file_frame, selectmode=tk.SINGLE, height=7, width=50)
+        self.files_listbox = tk.Listbox(self.file_frame, selectmode=tk.SINGLE, height=7, width=50, bg=ENTRY_BG_COLOR, fg=BLACK_FG_COLOR)
         self.files_listbox.grid(row=1, column=0, pady=5)
 
         self.remove_file_button = self.create_button(self.file_frame, "Remove Selected File", self.remove_file, 2, 0)
+        self.remove_file_button.configure(bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
+        
         self.add_row_button = self.create_button(self.file_frame, "Add Row", self.add_row, 0, 1)
-        self.remove_row_button = self.create_button(self.file_frame, "Remove Last Row", self.remove_row, 1, 1)
-        self.plot_button = self.create_button(self.file_frame, "Plot", self.plot_data, 3, 1)
+        self.add_row_button.configure(bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
 
-        self.table_frame = tk.Frame(root, padx=10, pady=10)
+        self.remove_row_button = self.create_button(self.file_frame, "Remove Last Row", self.remove_row, 1, 1)
+        self.remove_row_button.configure(bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
+        
+        self.plot_button = self.create_button(self.file_frame, "Plot", self.plot_data, 3, 1)
+        self.plot_button.configure(bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
+
+        # Frame für Tabellenoperationen
+        self.table_frame = tk.Frame(root, padx=10, pady=10, bg=DARK_BG_COLOR)
         self.table_frame.grid(row=11, column=0, sticky="nw")  # Nach Caption und Label Felder
 
-        # Placeholder for DataFrames and file names
+        # Placeholder für DataFrames und Dateinamen
         self.dataframes = {}
         self.rows = []
         self.canvas = None  # Store the canvas to update or clear it
 
         # Eingabefelder für Caption und Label
-        self.caption_label = tk.Label(self.file_frame, text="Caption:")
+        self.caption_label = tk.Label(self.file_frame, text="Caption:", bg=DARK_BG_COLOR, fg=BLACK_FG_COLOR)
         self.caption_label.grid(row=3, column=0, pady=5, sticky="w")
         self.caption_entry = self.create_entry(self.file_frame, 50, 4, 0, "Caption")
+        self.caption_entry.configure(bg=ENTRY_BG_COLOR, fg=BLACK_FG_COLOR)
 
-
-        self.label_label = tk.Label(self.file_frame, text="Label:")
+        self.label_label = tk.Label(self.file_frame, text="Label:", bg=DARK_BG_COLOR, fg=BLACK_FG_COLOR)
         self.label_label.grid(row=5, column=0, pady=5, sticky="w")
         self.label_entry = self.create_entry(self.file_frame, 40, 6, 0, "Label")
+        self.label_entry.configure(bg=ENTRY_BG_COLOR, fg=BLACK_FG_COLOR)
 
-        # Button für Tex-Export
-        self.export_button = tk.Button(self.file_frame, text=".tex exportieren", command=self.export_tex, width=15)
+        # Buttons für den Export in verschiedene Formate
+        self.export_button = tk.Button(self.file_frame, text=".tex exportieren", command=self.export_tex, width=15, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.export_button.grid(row=6, column=1, pady=5)
 
-        # Buttons in der Benutzeroberfläche für PNG und PDF Export
-        self.export_png_button = tk.Button(self.file_frame, text=".png exportieren", command=self.export_png, width=15)
+        self.export_png_button = tk.Button(self.file_frame, text=".png exportieren", command=self.export_png, width=15, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.export_png_button.grid(row=5, column=1, pady=5)
 
-        self.export_pdf_button = tk.Button(self.file_frame, text=".pdf exportieren", command=self.export_pdf, width=15)
+        self.export_pdf_button = tk.Button(self.file_frame, text=".pdf exportieren", command=self.export_pdf, width=15, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.export_pdf_button.grid(row=4, column=1, pady=5)
 
-        # Button für Plot-Vorschau
-        self.preview_button = tk.Button(self.file_frame, text="Plot-Vorschau", command=self.plot_preview, width=20)
+        # Vorschau und Projekt Buttons
+        self.preview_button = tk.Button(self.file_frame, text="Plot-Vorschau", command=self.plot_preview, width=20, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.preview_button.grid(row=2, column=1, pady=5)
 
-        self.save_project_button = tk.Button(self.file_frame, text="Projekt speichern", command=self.save_project, width=20)
+        self.save_project_button = tk.Button(self.file_frame, text="Projekt speichern", command=self.save_project, width=20, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.save_project_button.grid(row=0, column=3, pady=5)
 
-        self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20)
+        self.load_project_button = tk.Button(self.file_frame, text="Projekt laden", command=self.load_project, width=20, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.load_project_button.grid(row=1, column=3, pady=5)
 
-        self.formel_button = tk.Button(self.file_frame, text="Formelzeichen generieren", command=self.open_formelzeichen_creator, width=20)
+        # Zusätzliche Buttons für Formelzeichen und Einheiten
+        self.formel_button = tk.Button(self.file_frame, text="Formelzeichen generieren", command=self.open_formelzeichen_creator, width=20, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
         self.formel_button.grid(row=0, column=4, pady=5)
 
-        self.formel_button = tk.Button(self.file_frame, text="Einheiten generieren", command=self.open_einheiten_creator, width=20)
-        self.formel_button.grid(row=1, column=4, pady=5)
+        self.einheiten_button = tk.Button(self.file_frame, text="Einheiten generieren", command=self.open_einheiten_creator, width=20, bg=BUTTON_BG_COLOR, fg=BLACK_FG_COLOR)
+        self.einheiten_button.grid(row=1, column=4, pady=5)
 
+        # Plot Einstellungen laden (Falls vorhanden)
         self.plot_settings = self.load_config()["plot_settings"]
+
+
 
     def open_formelzeichen_creator(self):
         html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")
