@@ -257,7 +257,7 @@ class PlotGOAT:
         file_dropdown_y.bind("<<ComboboxSelected>>", lambda e: self.update_columns(file_dropdown_y, 'y'))
 
         # Visibility dropdown
-        visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "nicht sichtbar"], 0, 4, default_value="sichtbar", width=9)
+        visibility_dropdown = self.create_dropdown(row_frame, ["sichtbar", "unsichtbar"], 0, 4, default_value="sichtbar", width=7)
 
         # Legend name entry
         name_entry = tk.Entry(row_frame, width=20)
