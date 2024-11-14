@@ -11,5 +11,10 @@
         <input type="file" name="file">
         <button type="submit">Datei hochladen</button>
     </form>
+
+    {% if plot_url %}
+        <h2>Generiertes Diagramm:</h2>
+        <img src="{{ plot_url }}" alt="Plot">
+    {% endif %}
 </body>
 </html>
