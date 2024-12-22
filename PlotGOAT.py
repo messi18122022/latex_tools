@@ -150,9 +150,10 @@ class PlotGOAT:
                     "color": color_dropdown.get(),
                     "line_width": line_width_entry.get(),
                     "line_style": line_style_dropdown.get(),
-                    "marker": marker_dropdown.get()
+                    "marker": marker_dropdown.get(),
+                    "marker_size": marker_size_entry.get()
                 }
-                for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows
+                for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, marker_size_entry, row_frame in self.rows
             ]
         }
 
@@ -196,6 +197,8 @@ class PlotGOAT:
             last_row[7].insert(0, row_data["line_width"])
             last_row[8].set(row_data["line_style"])
             last_row[9].set(row_data["marker"])
+            last_row[10].delete(0, tk.END)
+            last_row[10].insert(0, row_data["marker_size"])
 
         tk.messagebox.showinfo("Erfolg", "Projekt wurde erfolgreich geladen.")
 
@@ -291,8 +294,11 @@ class PlotGOAT:
         # Marker style dropdown
         marker_dropdown = self.create_dropdown(row_frame, ["keine", "Kreis", "+", "Dreieck", "Quadrat"], 0, 9, default_value="keine", width=6)
 
+        # Markersize
+        marker_size_entry = self.create_entry(row_frame, width=5, row=0, column=10, placeholder="1")
+
         # Add to list of rows
-        self.rows.append((file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame))
+        self.rows.append((file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, marker_size_entry, row_frame))
 
         # Update file dropdown options if CSVs are already loaded
         file_dropdown_x["values"] = list(self.dataframes.keys())
@@ -483,7 +489,7 @@ class PlotGOAT:
             
             # Zähle die sichtbaren Linien, um die Bedingung für die Legende zu prüfen
             visible_lines = 0
-            for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, row_frame in self.rows:
+            for file_dropdown_x, file_dropdown_y, x_dropdown, y_dropdown, visibility_dropdown, name_entry, color_dropdown, line_width_entry, line_style_dropdown, marker_dropdown, marker_size_entry, row_frame in self.rows:
                 selected_file_x = file_dropdown_x.get()
                 selected_file_y = file_dropdown_y.get()
                 x_column = x_dropdown.get()
@@ -494,6 +500,7 @@ class PlotGOAT:
                 line_width = float(line_width_entry.get())
                 line_style = line_style_dropdown.get()
                 marker = marker_dropdown.get()
+                marker_size = float(marker_size_entry.get())
 
                 # Map line style and marker to matplotlib options
                 line_style_map = {
@@ -520,7 +527,7 @@ class PlotGOAT:
 
                     try:
                         # Plot the original data with settings
-                        ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark)
+                        ax.plot(x_data, y_data, label=legend_name, color=color, linewidth=line_width, linestyle=linestyle, marker=mark, markersize=marker_size)
                         visible_lines += 1
 
                         # Linear regression if selected
