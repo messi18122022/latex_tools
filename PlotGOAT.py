@@ -82,7 +82,23 @@ class PlotGOAT:
         self.formel_button = tk.Button(self.file_frame, text="Einheiten generieren", command=self.open_einheiten_creator, width=20)
         self.formel_button.grid(row=1, column=4, pady=5)
 
-        self.plot_settings = self.load_config()["plot_settings"]
+        self.plot_settings = {
+            "x_label": "X-axis Label",
+            "y_label": "Y-axis Label",
+            "x_min": None,
+            "x_max": None,
+            "y_min": None,
+            "y_max": None,
+            "width_cm": 16,
+            "height_cm": 6.7,
+            "legend_position": "oben rechts",
+            "invert_x_axis": False,
+            "log_x_axis": False,
+            "log_y_axis": False,
+            "grid": True,
+            "x_ticks": None,
+            "y_ticks": None
+        }
 
     def open_formelzeichen_creator(self):
         html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")
@@ -91,12 +107,6 @@ class PlotGOAT:
     def open_einheiten_creator(self):
         html_file_path = os.path.join(os.path.dirname(__file__), "latex_einheiten_creator.html")
         webbrowser.open_new_tab(f"file://{html_file_path}")
-
-    def load_config(self):
-        """Lade Konfiguration aus config.json"""
-        with open("resources/config.json", "r") as f:
-            config = json.load(f)
-        return config
 
     def create_button(self, frame, text, command, row, column, width=20):
         button = tk.Button(frame, text=text, command=command, width=width)
