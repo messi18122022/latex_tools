@@ -93,12 +93,14 @@ class PlotGOAT:
             "height_cm": 6.7,
             "legend_position": "oben rechts",
             "invert_x_axis": False,
+            "invert_y_axis": False,
             "log_x_axis": False,
             "log_y_axis": False,
             "grid": True,
             "x_ticks": None,
             "y_ticks": None
         }
+
 
     def open_formelzeichen_creator(self):
         html_file_path = os.path.join(os.path.dirname(__file__), "latex_formelzeichen_creator.html")
@@ -342,6 +344,7 @@ class PlotGOAT:
             self.plot_settings['height_cm'] = float(height_entry.get()) if height_entry.get() else 6.7
             self.plot_settings['legend_position'] = legend_position_dropdown.get()
             self.plot_settings['invert_x_axis'] = invert_x_axis_var.get()
+            self.plot_settings['invert_y_axis'] = invert_y_axis_var.get()
             self.plot_settings['log_x_axis'] = log_x_axis_var.get()
             self.plot_settings['log_y_axis'] = log_y_axis_var.get()
             self.plot_settings['grid'] = grid_var.get()
@@ -439,6 +442,11 @@ class PlotGOAT:
         invert_x_axis_var = tk.BooleanVar(value=self.plot_settings['invert_x_axis'])
         invert_x_axis_checkbox = tk.Checkbutton(settings_frame, text="Invert X-axis", variable=invert_x_axis_var)
         invert_x_axis_checkbox.pack(anchor="w")
+
+        invert_y_axis_var = tk.BooleanVar(value=self.plot_settings['invert_y_axis'])
+        invert_y_axis_checkbox = tk.Checkbutton(settings_frame, text="Invert Y-axis", variable=invert_y_axis_var)
+        invert_y_axis_checkbox.pack(anchor="w")
+
 
         # Einstellungen für log-Skala, Gitter, Ticks
         log_x_axis_var = tk.BooleanVar(value=self.plot_settings['log_x_axis'])
@@ -564,6 +572,9 @@ class PlotGOAT:
             if self.plot_settings['invert_x_axis']:
                 ax.invert_xaxis()
 
+            if self.plot_settings.get('invert_y_axis', False):
+                ax.invert_yaxis()
+
             if self.plot_settings['log_x_axis']:
                 ax.set_xscale('log')
             if self.plot_settings['log_y_axis']:
@@ -652,9 +663,13 @@ class PlotGOAT:
         if self.plot_settings['y_ticks'] is not None:
             tikz_code += f", ytick={{{','.join(map(str, self.plot_settings['y_ticks']))}}}"
 
-        # Hinzufügen der Invertierung, falls erforderlich
+        # Hinzufügen der Invertierung der X-Achse, falls erforderlich
         if self.plot_settings['invert_x_axis']:
             tikz_code += f", x dir=reverse"
+
+        # Hinzufügen der Invertierung der Y-Achse, falls erforderlich
+        if self.plot_settings['invert_y_axis']:
+            tikz_code += f", y dir=reverse"
 
         # Zähle die sichtbaren Linien
         visible_lines = [row for row in self.rows if row[4].get() == "sichtbar"]
@@ -795,6 +810,7 @@ class PlotGOAT:
         if self.plot_settings['x_min'] is not None and self.plot_settings['x_max'] is not None: ax.set_xlim([self.plot_settings['x_min'], self.plot_settings['x_max']])
         if self.plot_settings['y_min'] is not None and self.plot_settings['y_max'] is not None: ax.set_ylim([self.plot_settings['y_min'], self.plot_settings['y_max']])
         if self.plot_settings['invert_x_axis']: ax.invert_xaxis()
+        if self.plot_settings.get('invert_y_axis', False): ax.invert_yaxis()
         if self.plot_settings['log_x_axis']: ax.set_xscale('log')
         if self.plot_settings['log_y_axis']: ax.set_yscale('log')
         if self.plot_settings['grid']: ax.grid(True)
@@ -859,6 +875,10 @@ class PlotGOAT:
         
         if self.plot_settings['invert_x_axis']:
             ax.invert_xaxis()
+        
+        if self.plot_settings['invert_y_axis']:
+            ax.invert_yaxis()
+
         if self.plot_settings['log_x_axis']:
             ax.set_xscale('log')
         if self.plot_settings['log_y_axis']:
